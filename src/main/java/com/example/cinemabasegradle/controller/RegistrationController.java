@@ -1,6 +1,5 @@
 package com.example.cinemabasegradle.controller;
 
-import com.example.cinemabasegradle.dto.AuthenticationResponseDto;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.service.UserService;
 import lombok.AllArgsConstructor;
@@ -16,8 +15,8 @@ public class RegistrationController {
     private final UserService userService;
 
     @PostMapping(value = "/new")
-    public AuthenticationResponseDto register(@RequestBody @Valid UserDto userDto) {
-        return userService.createUser(userDto);
+    public void register(@RequestBody @Valid UserDto userDto) {
+        userService.createUser(userDto);
     }
 
     @PutMapping(value = "/update")
