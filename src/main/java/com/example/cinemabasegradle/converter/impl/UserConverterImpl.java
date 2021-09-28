@@ -1,5 +1,6 @@
 package com.example.cinemabasegradle.converter.impl;
 
+import com.example.cinemabasegradle.converter.ProfileConverter;
 import com.example.cinemabasegradle.converter.UserConverter;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.model.User;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserConverterImpl implements UserConverter {
 
-    private final ProfileConverterImpl profileConverter;
+    private final ProfileConverter profileConverter;
 
     @Override
     public User toModel(UserDto userDto) {

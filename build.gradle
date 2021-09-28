@@ -14,29 +14,50 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
+ext {
+    lombokVersion = '1.18.20'
+    lombokMapstructBindingVersion = '0.2.0'
+    mapstructVersion = '1.4.2.Final'
+    hibernateValidatorVersion = '6.1.6.Final'
+    commonsLang3Version = '3.12.0'
+    commonsIoVersion = '2.11.0'
+    httpClientVersion = '4.5.13'
+    jjwtVersion = '0.9.1'
+    swaggerVersion = '3.0.0'
+    h2Version = '1.4.200'
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.liquibase:liquibase-core'
-    implementation group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.6.Final'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
+repositories {
+    mavenCentral()
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.liquibase:liquibase-core'
+        //security
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation "io.jsonwebtoken:jjwt:${jjwtVersion}"
 
+        runtimeOnly 'mysql:mysql-connector-java'
+        implementation "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
+        implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+        implementation "commons-io:commons-io:${commonsIoVersion}"
+        implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+        //lombok
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        implementation "org.projectlombok:lombok:${lombokVersion}"
+        //lombok-mapstruct
+        annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+        implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+        implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+        //swagger
+        implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
 
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'mysql:mysql-connector-java'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation "com.h2database:h2:${h2Version}"
+    }
 }
 
 test {
