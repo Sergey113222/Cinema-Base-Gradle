@@ -1,17 +1,17 @@
 package com.example.cinemabasegradle.repository;
 
 import com.example.cinemabasegradle.model.Genre;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GenreRepository extends JpaRepository<Genre, Long> {
-    @Query("select g from Genre g where g.externalId = :externalId")
+public interface GenreRepository {
     Optional<Genre> findByExternalId(Long externalId);
 
-    @Query("select g from Genre g where g.externalId IN :genreExternalIds")
     List<Genre> findAllByExternalId(@Param("genreExternalIds") List<Long> genreExternalIds);
+
+    void saveAll(List<Genre> externalGenreDtoList);
+
+    long count();
 }

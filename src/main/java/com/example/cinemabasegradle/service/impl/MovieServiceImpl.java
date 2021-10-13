@@ -42,7 +42,11 @@ public class MovieServiceImpl implements MovieService {
 
         Movie movie = movieRepository
                 .findByExternalId(movieDto.getExternalMovieId())
-                .orElseGet(() -> movieRepository.save(movieConverter.toModel(movieDto)));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND)));
+        if (movie == null) {
+          movie = movieRepository.save(movieConverter.toModel(movieDto));
+        }
 
         return userMovieRepository.save(userMovieConverter.createUserMovie(user, movie, movieDto)).getId();
     }
