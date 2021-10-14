@@ -11,11 +11,8 @@ import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.MovieRepository;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
-import com.example.cinemabasegradle.security.jwt.JwtUser;
 import com.example.cinemabasegradle.service.MovieService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +29,7 @@ public class MovieServiceImpl implements MovieService {
     @Transactional
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
-        Authentication authenticate = SecurityContextHolder.getContext().getAuthentication();
-        JwtUser principal = (JwtUser) authenticate.getPrincipal();
-        Long userId = principal.getId();
+        Long userId = 1L;
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() ->
@@ -45,7 +40,7 @@ public class MovieServiceImpl implements MovieService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND)));
         if (movie == null) {
-          movie = movieRepository.save(movieConverter.toModel(movieDto));
+            movie = movieRepository.save(movieConverter.toModel(movieDto));
         }
 
         return userMovieRepository.save(userMovieConverter.createUserMovie(user, movie, movieDto)).getId();

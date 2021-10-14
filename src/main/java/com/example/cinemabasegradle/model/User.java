@@ -1,44 +1,29 @@
 package com.example.cinemabasegradle.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Table(name = "user")
 public class User extends BaseModel {
 
     @Column(name = "username")
-    @Getter
-    @Setter
     private String username;
-
+    @Column(name = "email")
+    private String email;
     @Column(name = "password")
-    @Getter
-    @Setter
     private String password;
-
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    @Getter
-    @Setter
     private Role role;
-
     @Column(name = "active")
-    @Getter
-    @Setter
     private Boolean active = true;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
-    @Getter
-    @Setter
     private Profile profile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

@@ -24,6 +24,7 @@ public class UserConverterImpl implements UserConverter {
         }
         User user = new User();
         user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setRole(userDto.getRole());
         user.setProfile(profileConverter.toModel(userDto.getProfileDto()));
@@ -38,6 +39,7 @@ public class UserConverterImpl implements UserConverter {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
         userDto.setRole(user.getRole());
         userDto.setProfileDto(profileConverter.toDto(user.getProfile()));

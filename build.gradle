@@ -34,9 +34,6 @@ repositories {
         implementation 'org.springframework.boot:spring-boot-starter-validation'
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.liquibase:liquibase-core'
-        //security
-        implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation "io.jsonwebtoken:jjwt:${jjwtVersion}"
 
         runtimeOnly 'mysql:mysql-connector-java'
         implementation "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"

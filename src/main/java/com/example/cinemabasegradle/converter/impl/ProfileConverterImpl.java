@@ -15,7 +15,6 @@ public class ProfileConverterImpl implements ProfileConverter {
         Profile profile = new Profile();
         profile.setAvatar(profileDto.getAvatar());
         profile.setAbout(profileDto.getAbout());
-        profile.setEmail(profileDto.getEmail());
         profile.setFirstName(profileDto.getFirstName());
         profile.setLastName(profileDto.getLastName());
         profile.setAge(profileDto.getAge());
@@ -33,7 +32,6 @@ public class ProfileConverterImpl implements ProfileConverter {
         ProfileDto profileDto = new ProfileDto();
         profileDto.setAvatar(profile.getAvatar());
         profileDto.setAbout(profile.getAbout());
-        profileDto.setEmail(profile.getEmail());
         profileDto.setFirstName(profile.getFirstName());
         profileDto.setLastName(profile.getLastName());
         profileDto.setAge(profile.getAge());

@@ -24,6 +24,8 @@ public class GenreRepositoryJdbcImpl implements GenreRepository {
     private static final String EXTERNAL_ID = "externalId";
     private static final String ID = "id";
     private static final String NAME = "name";
+    private static final String CREATED = "created";
+    private static final String UPDATED = "updated";
 
     @Value("${sql.genre.find_by_external_id}")
     private String findByExternalIdQuery;
@@ -35,12 +37,13 @@ public class GenreRepositoryJdbcImpl implements GenreRepository {
     private String countQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final GenreRowMapper genreRowMapper;
 
     @Override
     public Optional<Genre> findByExternalId(Long externalId) {
         Map<String, Object> params = new HashMap<>();
         params.put(EXTERNAL_ID, externalId);
-        Genre genre = namedParameterJdbcTemplate.queryForObject(findByExternalIdQuery, params, new GenreRowMapper());
+        Genre genre = namedParameterJdbcTemplate.queryForObject(findByExternalIdQuery, params, genreRowMapper);
         return Optional.ofNullable(genre);
     }
 
@@ -70,6 +73,8 @@ public class GenreRepositoryJdbcImpl implements GenreRepository {
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue(ID, genre.getId())
                 .addValue(NAME, genre.getName())
+                .addValue(CREATED, genre.getCreated())
+                .addValue(UPDATED, genre.getUpdated())
                 .addValue(EXTERNAL_ID, genre.getExternalId());
 
         if (genre.getId() == null) {

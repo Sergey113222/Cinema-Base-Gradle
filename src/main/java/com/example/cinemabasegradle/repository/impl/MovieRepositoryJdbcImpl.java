@@ -40,12 +40,13 @@ public class MovieRepositoryJdbcImpl implements MovieRepository {
     private String saveQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final MovieRowMapper movieRowMapper;
 
     @Override
     public Optional<Movie> findByExternalId(Long externalId) {
         Map<String, Object> params = new HashMap<>();
         params.put(EXTERNAL_ID, externalId);
-        Movie movie = namedParameterJdbcTemplate.queryForObject(findByExternalIdQuery, params, new MovieRowMapper());
+        Movie movie = namedParameterJdbcTemplate.queryForObject(findByExternalIdQuery, params, movieRowMapper);
         return Optional.ofNullable(movie);
     }
 

@@ -6,11 +6,9 @@ import com.example.cinemabasegradle.converter.UserConverter;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
-import com.example.cinemabasegradle.security.jwt.JwtTokenProvider;
 import com.example.cinemabasegradle.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -24,8 +22,6 @@ class UserServiceImplTest {
     private UserService userService;
     private UserRepository userRepository;
     private DirectionConverter directionConverter;
-    private JwtTokenProvider jwtTokenProvider;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final User user;
     private final UserDto userDto;
 
@@ -48,9 +44,7 @@ class UserServiceImplTest {
     void setUp() {
         userRepository = mock(UserRepository.class);
         userConverter = mock(UserConverter.class);
-        bCryptPasswordEncoder= mock(BCryptPasswordEncoder.class);
-        jwtTokenProvider = mock(JwtTokenProvider.class);
-        userService = new UserServiceImpl(userRepository, userConverter, bCryptPasswordEncoder,  jwtTokenProvider);
+        userService = new UserServiceImpl(userRepository, userConverter);
     }
 
     @Test

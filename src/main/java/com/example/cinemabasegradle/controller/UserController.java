@@ -27,11 +27,9 @@ public class UserController {
 
     @GetMapping(value = "/param")
     @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Find all sorted Users (choose type of sort(ASC/DESC) and by which column to sort)")
-    public List<UserDto> findAllUsersSorted(
-            @RequestParam Sort.Direction direction,
-            @RequestParam String sortColumn) {
-        return userService.findAllUsers(direction, sortColumn);
+    @ApiOperation(value = "Find all Users")
+    public List<UserDto> findAllUsers() {
+        return userService.findAllUsers();
     }
 
     @DeleteMapping("/{id}")
