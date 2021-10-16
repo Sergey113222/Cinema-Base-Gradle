@@ -29,21 +29,18 @@ public class MovieServiceImpl implements MovieService {
     @Transactional
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
-        Long userId = 1L;
+        Long userId = 3L;
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
 
-        Movie movie = movieRepository
-                .findByExternalId(movieDto.getExternalMovieId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND)));
-        if (movie == null) {
-            movie = movieRepository.save(movieConverter.toModel(movieDto));
-        }
+        Movie movie = movieRepository.findByExternalId(movieDto.getExternalMovieId())
+                .orElse(movieRepository.save(movieConverter.toModel(movieDto)));
 
-        return userMovieRepository.save(userMovieConverter.createUserMovie(user, movie, movieDto)).getId();
+        UserMovie userMovie = userMovieConverter.createUserMovie(user, movie, movieDto);
+        UserMovie saveUserMovie = userMovieRepository.save(userMovie);
+        return saveUserMovie.getId();
     }
 
     @Override

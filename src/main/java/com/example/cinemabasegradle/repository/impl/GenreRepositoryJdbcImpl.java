@@ -8,6 +8,7 @@ import com.example.cinemabasegradle.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.RowCountCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -66,7 +67,9 @@ public class GenreRepositoryJdbcImpl implements GenreRepository {
 
     @Override
     public long count() {
-        return 0;
+        RowCountCallbackHandler countCallback = new RowCountCallbackHandler();
+        namedParameterJdbcTemplate.query(countQuery, countCallback);
+        return countCallback.getRowCount();
     }
 
     public Genre save(Genre genre) {

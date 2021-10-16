@@ -13,7 +13,7 @@ public class GenreRowMapper implements RowMapper<Genre> {
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String CREATED = "created";
-    private static final String EXTERNAL_ID = "externalId";
+    private static final String EXTERNAL_ID = "external_id";
 
     @Override
     public Genre mapRow(ResultSet resultSet, int i) throws SQLException {

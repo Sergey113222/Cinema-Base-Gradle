@@ -14,27 +14,20 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api/v1/users")
-@Api(tags = "controller-only-for-ADMIN")
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Find User by id")
     public UserDto findUserById(@PathVariable("id") Long id) {
         return userService.findUserById(id);
     }
 
-    @GetMapping(value = "/param")
-    @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Find all Users")
+    @GetMapping
     public List<UserDto> findAllUsers() {
         return userService.findAllUsers();
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Delete User by id")
     public void deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }

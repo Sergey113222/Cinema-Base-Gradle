@@ -52,6 +52,7 @@ public class UserConverterImpl implements UserConverter {
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
             userDto.setUsername(user.getUsername());
+            userDto.setEmail(user.getEmail());
             userDto.setPassword(user.getPassword());
             userDto.setRole(user.getRole());
             userDto.setProfileDto(profileConverter.toDto(user.getProfile()));
