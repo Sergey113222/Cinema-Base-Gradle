@@ -20,6 +20,7 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String ACTIVE = "active";
     private static final String CREATED = "created";
 
+    private static final String PROFILE_ID = "p.id";
     private static final String AVATAR = "avatar";
     private static final String ABOUT = "about";
     private static final String FIRST_NAME = "first_name";
@@ -41,6 +42,7 @@ public class UsersRowMapper implements RowMapper<User> {
         user.setRole(Role.valueOf(resultSet.getString(ROLE)));
         user.setActive(resultSet.getBoolean(ACTIVE));
 
+        profile.setId(resultSet.getLong(PROFILE_ID));
         profile.setAvatar(resultSet.getString(AVATAR));
         profile.setAbout(resultSet.getString(ABOUT));
         profile.setFirstName(resultSet.getString(FIRST_NAME));
