@@ -31,7 +31,7 @@ public class MovieServiceImpl implements MovieService {
     public Long addToFavouriteMovies(MovieDto movieDto) {
         Long userId = 3L;
         User user = userRepository
-                .findById(userId)
+                .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
 

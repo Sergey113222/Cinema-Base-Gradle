@@ -49,7 +49,7 @@ public class GenreRepositoryJdbcImpl implements GenreRepository {
     }
 
     @Override
-    public List<Genre> findAllByExternalId(List<Long> genreExternalIds) {
+    public List<Genre> findAllByExternalIdIn(List<Long> genreExternalIds) {
         List<Genre> result = new ArrayList<>();
         for (Long externalId : genreExternalIds) {
             result.add(this.findByExternalId(externalId).orElseThrow(() ->

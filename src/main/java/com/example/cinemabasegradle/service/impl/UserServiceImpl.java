@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
+        User user = userRepository.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         log.info("In findUserById - user: {} successfully found by id: {}", user, id);
         return userConverter.toDto(user);
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(UserDto userDto) {
         Long id = userDto.getId();
-        User existed = userRepository.findById(id).orElseThrow(() ->
+        User existed = userRepository.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new IllegalArgumentException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         existed.setUsername(userDto.getUsername());
         existed.setPassword((userDto.getPassword()));

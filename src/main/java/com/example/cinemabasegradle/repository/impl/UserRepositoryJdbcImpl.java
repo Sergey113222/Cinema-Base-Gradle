@@ -56,7 +56,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private final UsersRowMapper usersRowMapper;
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findByIdAndActiveTrue(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put(ID, id);
         User user = namedParameterJdbcTemplate.queryForObject(findByIdQuery, params, usersRowMapper);
@@ -77,7 +77,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
+    public Optional<User> findByEmailAndActiveTrue(String email) {
         Map<String, Object> params = new HashMap<>();
         params.put(EMAIL, email);
         User user = namedParameterJdbcTemplate.queryForObject(findByEmailQuery, params, usersRowMapper);

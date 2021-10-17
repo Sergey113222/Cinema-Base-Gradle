@@ -33,7 +33,7 @@ public class MovieConverterImpl implements MovieConverter {
 
 
         List<Long> genreExternalIds = movieDto.getGenreIds();
-        List<Genre> genres = genreRepository.findAllByExternalId(genreExternalIds);
+        List<Genre> genres = genreRepository.findAllByExternalIdIn(genreExternalIds);
         movie.setGenres(genres);
         return movie;
     }

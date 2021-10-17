@@ -18,8 +18,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepositoryJpa extends UserRepository, JpaRepository<User, Long> {
 
-    @Query("select u from User u where u.active = true and u.id = :id")
-    Optional<User> findById(Long id);
+    Optional<User> findByIdAndActiveTrue(Long id);
 
     User findByUsername(String username);
 
@@ -29,6 +28,5 @@ public interface UserRepositoryJpa extends UserRepository, JpaRepository<User, L
 
     List<User> findAll();
 
-    @Query("select u from User u  where u.active = true and u.email = :email")
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndActiveTrue(String email);
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface GenreRepository {
     Optional<Genre> findByExternalId(Long externalId);
 
-    List<Genre> findAllByExternalId(@Param("genreExternalIds") List<Long> genreExternalIds);
+    List<Genre> findAllByExternalIdIn(@Param("genreExternalIds") List<Long> genreExternalIds);
 
     void saveAll(List<Genre> externalGenreDtoList);
 
