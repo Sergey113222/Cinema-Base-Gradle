@@ -51,7 +51,6 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
                 .addValue(NOTES, userMovie.getNotes())
                 .addValue(VIEWED, userMovie.isViewed())
                 .addValue(USER_ID, userMovie.getUser().getId())
-                .addValue(MOVIE_ID, userMovie.getMovie().getId())
                 .addValue(CREATED, new Date());
         if (userMovie.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserMovieQuery, paramSource, holder);

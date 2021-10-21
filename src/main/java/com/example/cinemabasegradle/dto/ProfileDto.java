@@ -8,12 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileDto {
+    private Long id;
     private String avatar;
-    private String about;
     private String firstName;
     private String lastName;
     private Integer age;
-    private String gender;
-    private String region;
     private String language;
+    public UserDto userDto;
 }

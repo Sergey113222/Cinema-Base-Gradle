@@ -1,14 +1,12 @@
 package com.example.cinemabasegradle.service.impl;
 
 
+import com.example.cinemabasegradle.dto.ExternalGenreDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.cinemabasegradle.converter.GenreConverter;
-import com.example.cinemabasegradle.dto.ExternalGenreDto;
-import com.example.cinemabasegradle.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -27,10 +25,8 @@ public class GenreServiceImpl {
 
     private static final String JSON_NODE_STR = "genres";
     private static final String API_KEY = "api_key";
-    private final GenreRepository genreRepository;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final GenreConverter genreConverter;
 
     @Value("${themoviedb.ord.api-key}")
     private String apiKey;
@@ -44,7 +40,7 @@ public class GenreServiceImpl {
     @Value("${themoviedb.ord.path-get-movie-genre-list}")
     private String getMovieGenreList;
 
-    public void getGenresExternal() throws JsonProcessingException {
+    public List<ExternalGenreDto> getGenresExternal() throws JsonProcessingException {
         URI uri = UriComponentsBuilder.newInstance()
                 .scheme(scheme)
                 .host(host)
@@ -53,16 +49,15 @@ public class GenreServiceImpl {
                 .build()
                 .toUri();
 
-        if (genreRepository.count() == 0) {
-            RequestEntity<String> request = new RequestEntity<>(HttpMethod.GET, uri);
-            ResponseEntity<String> response = restTemplate.exchange(request, String.class);
-            String genresJson = response.getBody();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            JsonNode responseBody = objectMapper.readTree(genresJson);
-            JsonNode resultsMassive = responseBody.path(JSON_NODE_STR);
-            List<ExternalGenreDto> jsonGenreList = objectMapper.readValue(resultsMassive.toString(), new TypeReference<List<ExternalGenreDto>>() {
-            });
-            genreRepository.saveAll(genreConverter.toModel(jsonGenreList));
-        }
+
+        RequestEntity<String> request = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<String> response = restTemplate.exchange(request, String.class);
+        String genresJson = response.getBody();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        JsonNode responseBody = objectMapper.readTree(genresJson);
+        JsonNode resultsMassive = responseBody.path(JSON_NODE_STR);
+        return objectMapper.readValue(resultsMassive.toString(), new TypeReference<>() {
+        });
     }
 }
+

@@ -12,28 +12,7 @@
     <changeSet id="01" author="Sergey">
         <tagDatabase tag="db_init"/>
     </changeSet>
-    <changeSet id="02" author="Sergey">
-        <tagDatabase tag="add column external_id table movie"/>
-    </changeSet>
-    <changeSet id="03" author="Sergey">
-        <tagDatabase tag="add column external_id table genre"/>
-    </changeSet>
-    <changeSet id="04" author="Sergey">
-        <tagDatabase tag="rename column profile_id to user_id table user_movie"/>
-    </changeSet>
-    <changeSet id="05" author="Sergey">
-        <tagDatabase tag="drop column email from profile"/>
-    </changeSet>
-    <changeSet id="06" author="Sergey">
-        <tagDatabase tag="add column email to user"/>
-    </changeSet>
 
     <include file="changelog_001.xml" relativeToChangelogFile="true"/>
-    <include file="changelog_002.xml" relativeToChangelogFile="true"/>
-    <include file="changelog_003.xml" relativeToChangelogFile="true"/>
-    <include file="changelog_004.xml" relativeToChangelogFile="true"/>
-    <include file="changelog_005.xml" relativeToChangelogFile="true"/>
-    <include file="changelog_006.xml" relativeToChangelogFile="true"/>
-
 
 </databaseChangeLog>

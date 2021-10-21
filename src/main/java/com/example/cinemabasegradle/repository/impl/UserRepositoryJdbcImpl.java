@@ -24,17 +24,15 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String ROLE = "role";
-    private static final String PROFILE_ID = "profileId";
     private static final String ACTIVE = "active";
     private static final String CREATED = "created";
+    private static final String UPDATED = "updated";
 
     private static final String AVATAR = "avatar";
-    private static final String ABOUT = "about";
+    private static final String USER_ID = "userId";
     private static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "lastName";
     private static final String AGE = "age";
-    private static final String GENDER = "gender";
-    private static final String REGION = "region";
     private static final String LANGUAGE = "language";
 
     @Value("${sql.user.find_by_id}")
@@ -49,6 +47,10 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private String saveUserQuery;
     @Value("${sql.user.save_profile}")
     private String saveProfileQuery;
+    @Value("${sql.user.update_user}")
+    private String updateUserQuery;
+    @Value("${sql.user.update_profile}")
+    private String updateProfileQuery;
     @Value("${sql.user.delete}")
     private String deleteQuery;
 
@@ -72,8 +74,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        List<User> result = namedParameterJdbcTemplate.query(findAllQuery, usersRowMapper);
-        return result;
+        return namedParameterJdbcTemplate.query(findAllQuery, usersRowMapper);
     }
 
     @Override
@@ -87,47 +88,39 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     @Override
     public User save(User user) {
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
-        SqlParameterSource paramSource = new MapSqlParameterSource()
+        SqlParameterSource paramSourceUser = new MapSqlParameterSource()
                 .addValue(ID, user.getId())
                 .addValue(USERNAME, user.getUsername())
                 .addValue(PASSWORD, user.getPassword())
                 .addValue(ROLE, user.getRole().toString())
                 .addValue(ACTIVE, user.getActive())
                 .addValue(CREATED, new Date())
-                .addValue(EMAIL, user.getEmail())
+                .addValue(UPDATED, new Date())
+                .addValue(EMAIL, user.getEmail());
+
+        if (user.getId()==null) {
+            namedParameterJdbcTemplate.update(saveUserQuery, paramSourceUser, holder);
+            user.setId(holder.getKey().longValue());
+        }else {
+            namedParameterJdbcTemplate.update(updateUserQuery, paramSourceUser);
+        }
+
+        SqlParameterSource paramSourceProfile = new MapSqlParameterSource()
+                .addValue(ID, user.getProfile().getId())
+                .addValue(USER_ID, user.getId())
                 .addValue(AVATAR, user.getProfile().getAvatar())
-                .addValue(ABOUT, user.getProfile().getAbout())
                 .addValue(FIRST_NAME, user.getProfile().getFirstName())
                 .addValue(LAST_NAME, user.getProfile().getLastName())
                 .addValue(AGE, user.getProfile().getAge())
-                .addValue(GENDER, user.getProfile().getGender())
-                .addValue(REGION, user.getProfile().getRegion())
                 .addValue(LANGUAGE, user.getProfile().getLanguage())
-                .addValue(CREATED, new Date());
-
-        namedParameterJdbcTemplate.update(saveProfileQuery, paramSource, holder);
-
-        SqlParameterSource paramSource1 = new MapSqlParameterSource()
-                .addValue(ID, user.getId())
-                .addValue(USERNAME, user.getUsername())
-                .addValue(PASSWORD, user.getPassword())
-                .addValue(ROLE, user.getRole().toString())
-                .addValue(ACTIVE, user.getActive())
-                .addValue(PROFILE_ID, holder.getKey().longValue())
                 .addValue(CREATED, new Date())
-                .addValue(EMAIL, user.getEmail())
-                .addValue(AVATAR, user.getProfile().getAvatar())
-                .addValue(ABOUT, user.getProfile().getAbout())
-                .addValue(FIRST_NAME, user.getProfile().getFirstName())
-                .addValue(LAST_NAME, user.getProfile().getLastName())
-                .addValue(AGE, user.getProfile().getAge())
-                .addValue(GENDER, user.getProfile().getGender())
-                .addValue(REGION, user.getProfile().getRegion())
-                .addValue(LANGUAGE, user.getProfile().getLanguage())
-                .addValue(CREATED, new Date());
+                .addValue(UPDATED, new Date());
 
-        namedParameterJdbcTemplate.update(saveUserQuery, paramSource1, holder);
-        user.setId(holder.getKey().longValue());
+        if (user.getProfile().getId()==null) {
+        namedParameterJdbcTemplate.update(saveProfileQuery, paramSourceProfile, holder);
+        }else {
+            namedParameterJdbcTemplate.update(updateProfileQuery, paramSourceProfile);
+        }
         return user;
     }
 

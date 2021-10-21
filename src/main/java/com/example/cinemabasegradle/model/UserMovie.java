@@ -1,18 +1,19 @@
 package com.example.cinemabasegradle.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user_movie")
 public class UserMovie extends BaseModel {
 
+    @Column(name = "external_movie_id")
+    private Long externalMovieId;
     @Column(name = "rating")
     private Integer rating;
     @Column(name = "notes")
@@ -22,7 +23,4 @@ public class UserMovie extends BaseModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Movie movie;
 }

@@ -4,20 +4,22 @@ import com.example.cinemabasegradle.converter.UserConverter;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
+import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -27,7 +29,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         userDto.setRole(Role.ROLE_USER);
-        User createdUser = userRepository.save(userConverter.toModel(userDto));
+        User user = userConverter.toModel(userDto);
+
+        Profile profile = user.getProfile();
+        profile.setUser(user);
+        User createdUser = userRepository.save(user);
         log.info("In createUser - user: {} successfully created", createdUser);
         return userDto;
     }
@@ -41,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllUsers() {
-        List<UserDto> userDtoList = userConverter.toDtoList(userRepository.findAll());
+        List<UserDto> userDtoList = userRepository.findAll().stream().map(userConverter::toDto).collect(Collectors.toList());
         log.info("In findAll - users: {} successfully found", userDtoList.size());
         return userDtoList;
     }
@@ -62,6 +68,19 @@ public class UserServiceImpl implements UserService {
                 new IllegalArgumentException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         existed.setUsername(userDto.getUsername());
         existed.setPassword((userDto.getPassword()));
+        existed.setEmail(userDto.getEmail());
+
+        Profile profile = new Profile();
+        profile.setId(existed.getProfile().getId());
+        profile.setAvatar(userDto.getProfileDto().getAvatar());
+        profile.setFirstName(userDto.getProfileDto().getFirstName());
+        profile.setLastName(userDto.getProfileDto().getLastName());
+        profile.setAge(userDto.getProfileDto().getAge());
+        profile.setLanguage(userDto.getProfileDto().getLanguage());
+        profile.setCreated(existed.getCreated());
+        profile.setUpdated(existed.getUpdated());
+        profile.setUser(existed);
+        existed.setProfile(profile);
         log.info("In updateUser - user: {} successfully updated", existed);
         userRepository.save(existed);
     }

@@ -22,12 +22,9 @@ public class UsersRowMapper implements RowMapper<User> {
 
     private static final String PROFILE_ID = "p.id";
     private static final String AVATAR = "avatar";
-    private static final String ABOUT = "about";
     private static final String FIRST_NAME = "first_name";
     private static final String LAST_NAME = "last_name";
     private static final String AGE = "age";
-    private static final String GENDER = "gender";
-    private static final String REGION = "region";
     private static final String LANGUAGE = "language";
 
     @Override
@@ -41,20 +38,17 @@ public class UsersRowMapper implements RowMapper<User> {
         user.setPassword(resultSet.getString(PASSWORD));
         user.setRole(Role.valueOf(resultSet.getString(ROLE)));
         user.setActive(resultSet.getBoolean(ACTIVE));
+        user.setCreated(resultSet.getDate(CREATED).toLocalDate());
 
         profile.setId(resultSet.getLong(PROFILE_ID));
         profile.setAvatar(resultSet.getString(AVATAR));
-        profile.setAbout(resultSet.getString(ABOUT));
         profile.setFirstName(resultSet.getString(FIRST_NAME));
         profile.setLastName(resultSet.getString(LAST_NAME));
         profile.setAge(resultSet.getInt(AGE));
-        profile.setGender(resultSet.getString(GENDER));
-        profile.setRegion(resultSet.getString(REGION));
         profile.setLanguage(resultSet.getString(LANGUAGE));
-        profile.setCreated(resultSet.getDate(CREATED));
-
+        profile.setCreated(resultSet.getDate(CREATED).toLocalDate());
         user.setProfile(profile);
-        user.setCreated(resultSet.getDate(CREATED));
+
         return user;
     }
 }

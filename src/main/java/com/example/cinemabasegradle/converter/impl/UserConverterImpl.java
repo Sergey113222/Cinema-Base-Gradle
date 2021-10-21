@@ -4,25 +4,22 @@ import com.example.cinemabasegradle.converter.ProfileConverter;
 import com.example.cinemabasegradle.converter.UserConverter;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.model.User;
-import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserConverterImpl implements UserConverter {
 
     private final ProfileConverter profileConverter;
 
     @Override
     public User toModel(UserDto userDto) {
-        if (ObjectUtils.anyNull(userDto, userDto.getUsername(), userDto.getPassword())) {
-            throw new IllegalArgumentException("Some of required fields is null: " + userDto);
+        if (userDto == null) {
+            return null;
         }
         User user = new User();
+        user.setId(userDto.getId());
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
@@ -44,19 +41,5 @@ public class UserConverterImpl implements UserConverter {
         userDto.setRole(user.getRole());
         userDto.setProfileDto(profileConverter.toDto(user.getProfile()));
         return userDto;
-    }
-
-    @Override
-    public List<UserDto> toDtoList(List<User> userList) {
-        return userList.stream().map(user -> {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setUsername(user.getUsername());
-            userDto.setEmail(user.getEmail());
-            userDto.setPassword(user.getPassword());
-            userDto.setRole(user.getRole());
-            userDto.setProfileDto(profileConverter.toDto(user.getProfile()));
-            return userDto;
-        }).collect(Collectors.toList());
     }
 }
