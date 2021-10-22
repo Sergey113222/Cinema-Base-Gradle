@@ -1,6 +1,5 @@
 package com.example.cinemabasegradle.service.impl;
 
-import com.example.cinemabasegradle.converter.UserMovieConverter;
 import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
@@ -9,45 +8,52 @@ import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.MovieService;
+import com.example.cinemabasegradle.service.SearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-public class MovieServiceImpl implements MovieService {
+public class UserMovieServiceImpl implements MovieService {
 
     private final UserMovieRepository userMovieRepository;
     private final UserRepository userRepository;
-    private final UserMovieConverter userMovieConverter;
+    private final SearchService searchService;
 
-    @Transactional
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
-        Long userId = 2L;
+        Long userId = 16L;
         User user = userRepository
                 .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
 
-//        Movie movie = movieRepository.findByExternalId(movieDto.getExternalMovieId())
-//                .orElse(movieRepository.save(movieConverter.toModel(movieDto)));
+        if ((user == null) || (movieDto == null)) {
+            return null;
+        }
+        UserMovie userMovie = new UserMovie();
+        userMovie.setUser(user);
+        userMovie.setRating(movieDto.getPersonalRating());
+        userMovie.setNotes(movieDto.getPersonalNotes());
+        userMovie.setExternalMovieId(movieDto.getExternalMovieId());
 
-//        UserMovie userMovie = userMovieConverter.createUserMovie(user, movie, movieDto);
-//        UserMovie saveUserMovie = userMovieRepository.save(userMovie);
-//        return saveUserMovie.getId();
-        return null;
+        UserMovie saveUserMovie = userMovieRepository.save(userMovie);
+        return saveUserMovie.getId();
     }
 
     @Override
     public MovieDto fetchFavouriteMovieById(Long id) {
         UserMovie userMovie = userMovieRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
-
-        return userMovieConverter.convertUserMovieToMovieDto(userMovie);
+        if (userMovie == null) {
+            return null;
+        }
+        MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
+        movieDto.setPersonalRating(userMovie.getRating());
+        movieDto.setPersonalNotes(userMovie.getNotes());
+        return movieDto;
     }
 
-    @Transactional
     @Override
     public void updateFavouriteMovie(MovieDto movieDto, Long userMovieId) {
         UserMovie userMovie = userMovieRepository
@@ -59,7 +65,6 @@ public class MovieServiceImpl implements MovieService {
         userMovieRepository.save(userMovie);
     }
 
-    @Transactional
     @Override
     public void deleteFavouriteMovie(Long id) {
         UserMovie userMovie = userMovieRepository

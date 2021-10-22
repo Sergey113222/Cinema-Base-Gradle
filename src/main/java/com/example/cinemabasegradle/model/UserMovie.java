@@ -21,6 +21,7 @@ public class UserMovie extends BaseModel {
     @Column(name = "viewed")
     private boolean viewed;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }

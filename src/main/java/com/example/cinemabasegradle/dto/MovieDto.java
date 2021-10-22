@@ -27,8 +27,8 @@ public class MovieDto {
     private Double voteAverage;
     private String overview;
     private Boolean adult;
-    @JsonProperty("genre_ids")
-    private List<Long> genreIds;
+    @JsonProperty("genres")
+    private List<ExternalGenreDto> genreDtoList;
     @JsonProperty("personal_rating")
     @Min(value = 0, message = "Rating should be between [0-10]")
     @Max(value = 10, message = "Rating should be between [0-10]")
