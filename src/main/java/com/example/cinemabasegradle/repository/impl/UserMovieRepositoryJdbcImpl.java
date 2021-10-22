@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,8 +27,9 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     private static final String NOTES = "notes";
     private static final String VIEWED = "viewed";
     private static final String USER_ID = "userId";
-    private static final String MOVIE_ID = "movieId";
     private static final String CREATED = "created";
+    private static final String UPDATED = "updated";
+    private static final String EXTERNAL_ID = "externalMovieId";
 
     @Value("${sql.user_movie.find_by_id}")
     private String findByIdQuery;
@@ -47,11 +48,13 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue(ID, userMovie.getId())
+                .addValue(EXTERNAL_ID, userMovie.getExternalMovieId())
                 .addValue(RATING, userMovie.getRating())
                 .addValue(NOTES, userMovie.getNotes())
                 .addValue(VIEWED, userMovie.isViewed())
                 .addValue(USER_ID, userMovie.getUser().getId())
-                .addValue(CREATED, new Date());
+                .addValue(CREATED, LocalDate.now())
+                .addValue(UPDATED, LocalDate.now());
         if (userMovie.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserMovieQuery, paramSource, holder);
             userMovie.setId(holder.getKey().longValue());

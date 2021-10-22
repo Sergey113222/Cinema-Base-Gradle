@@ -19,6 +19,7 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String ROLE = "role";
     private static final String ACTIVE = "active";
     private static final String CREATED = "created";
+    private static final String UPDATED = "updated";
 
     private static final String PROFILE_ID = "p.id";
     private static final String AVATAR = "avatar";
@@ -38,15 +39,24 @@ public class UsersRowMapper implements RowMapper<User> {
         user.setPassword(resultSet.getString(PASSWORD));
         user.setRole(Role.valueOf(resultSet.getString(ROLE)));
         user.setActive(resultSet.getBoolean(ACTIVE));
-        user.setCreated(resultSet.getDate(CREATED).toLocalDate());
-
+        if (resultSet.getDate(CREATED)!=null) {
+            user.setCreated(resultSet.getDate(CREATED).toLocalDate());
+        }
+        if (resultSet.getDate(UPDATED)!=null) {
+            user.setCreated(resultSet.getDate(UPDATED).toLocalDate());
+        }
         profile.setId(resultSet.getLong(PROFILE_ID));
         profile.setAvatar(resultSet.getString(AVATAR));
         profile.setFirstName(resultSet.getString(FIRST_NAME));
         profile.setLastName(resultSet.getString(LAST_NAME));
         profile.setAge(resultSet.getInt(AGE));
         profile.setLanguage(resultSet.getString(LANGUAGE));
-        profile.setCreated(resultSet.getDate(CREATED).toLocalDate());
+        if (resultSet.getDate(CREATED)!=null) {
+            profile.setCreated(resultSet.getDate(CREATED).toLocalDate());
+        }
+        if (resultSet.getDate(UPDATED)!=null) {
+            user.setCreated(resultSet.getDate(UPDATED).toLocalDate());
+        }
         user.setProfile(profile);
 
         return user;
