@@ -39,10 +39,10 @@ public class UsersRowMapper implements RowMapper<User> {
         user.setPassword(resultSet.getString(PASSWORD));
         user.setRole(Role.valueOf(resultSet.getString(ROLE)));
         user.setActive(resultSet.getBoolean(ACTIVE));
-        if (resultSet.getDate(CREATED)!=null) {
+        if (resultSet.getDate(CREATED) != null) {
             user.setCreated(resultSet.getDate(CREATED).toLocalDate());
         }
-        if (resultSet.getDate(UPDATED)!=null) {
+        if (resultSet.getDate(UPDATED) != null) {
             user.setCreated(resultSet.getDate(UPDATED).toLocalDate());
         }
         profile.setId(resultSet.getLong(PROFILE_ID));
@@ -51,10 +51,10 @@ public class UsersRowMapper implements RowMapper<User> {
         profile.setLastName(resultSet.getString(LAST_NAME));
         profile.setAge(resultSet.getInt(AGE));
         profile.setLanguage(resultSet.getString(LANGUAGE));
-        if (resultSet.getDate(CREATED)!=null) {
-            profile.setCreated(resultSet.getDate(CREATED).toLocalDate());
-        }
-        if (resultSet.getDate(UPDATED)!=null) {
+
+        profile.setCreated(resultSet.getDate(CREATED) == null ? null : resultSet.getDate(CREATED).toLocalDate());
+
+        if (resultSet.getDate(UPDATED) != null) {
             user.setCreated(resultSet.getDate(UPDATED).toLocalDate());
         }
         user.setProfile(profile);
