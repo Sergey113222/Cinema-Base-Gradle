@@ -19,7 +19,6 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String ROLE = "role";
     private static final String ACTIVE = "active";
     private static final String CREATED = "created";
-    private static final String UPDATED = "updated";
 
     private static final String PROFILE_ID = "p.id";
     private static final String AVATAR = "avatar";
@@ -42,9 +41,7 @@ public class UsersRowMapper implements RowMapper<User> {
         if (resultSet.getDate(CREATED) != null) {
             user.setCreated(resultSet.getDate(CREATED).toLocalDate());
         }
-        if (resultSet.getDate(UPDATED) != null) {
-            user.setCreated(resultSet.getDate(UPDATED).toLocalDate());
-        }
+
         profile.setId(resultSet.getLong(PROFILE_ID));
         profile.setAvatar(resultSet.getString(AVATAR));
         profile.setFirstName(resultSet.getString(FIRST_NAME));
@@ -54,9 +51,6 @@ public class UsersRowMapper implements RowMapper<User> {
 
         profile.setCreated(resultSet.getDate(CREATED) == null ? null : resultSet.getDate(CREATED).toLocalDate());
 
-        if (resultSet.getDate(UPDATED) != null) {
-            user.setCreated(resultSet.getDate(UPDATED).toLocalDate());
-        }
         user.setProfile(profile);
 
         return user;

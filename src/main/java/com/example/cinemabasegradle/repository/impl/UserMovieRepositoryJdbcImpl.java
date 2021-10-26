@@ -58,7 +58,6 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         if (userMovie.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserMovieQuery, paramSource, holder);
             userMovie.setId(holder.getKey().longValue());
-            return userMovie;
         } else {
             namedParameterJdbcTemplate.update(updateUserMovieQuery, paramSource);
         }

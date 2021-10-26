@@ -1,6 +1,6 @@
 package com.example.cinemabasegradle.service.impl;
 
-import com.example.cinemabasegradle.converter.UserConverter;
+import com.example.cinemabasegradle.converter.impl.UserConverterMapstruct;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserConverter userConverter;
+    private final UserConverterMapstruct userConverterMapstruct;
 
     @Transactional
     @Override
     public UserDto createUser(UserDto userDto) {
         userDto.setRole(Role.ROLE_USER);
-        User user = userConverter.toModel(userDto);
+        User user = userConverterMapstruct.toModel(userDto);
 
         Profile profile = user.getProfile();
         profile.setUser(user);
@@ -40,14 +40,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findUserByName(String username) {
-        UserDto userDto = userConverter.toDto(userRepository.findByUsername(username));
+        UserDto userDto = userConverterMapstruct.toDto(userRepository.findByUsername(username));
         log.info("In findUserByName - user: {} successfully found by username: {}", userDto, username);
         return userDto;
     }
 
     @Override
     public List<UserDto> findAllUsers() {
-        List<UserDto> userDtoList = userRepository.findAll().stream().map(userConverter::toDto).collect(Collectors.toList());
+        List<UserDto> userDtoList = userRepository.findAll().stream().map(userConverterMapstruct::toDto).collect(Collectors.toList());
         log.info("In findAll - users: {} successfully found", userDtoList.size());
         return userDtoList;
     }
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         log.info("In findUserById - user: {} successfully found by id: {}", user, id);
-        return userConverter.toDto(user);
+        return userConverterMapstruct.toDto(user);
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @JsonAutoDetect
 public class MovieDto {
+    @NotNull(message = "Name cannot be null")
     @JsonProperty("id")
     private Long externalMovieId;
     private String title;

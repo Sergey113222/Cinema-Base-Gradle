@@ -7,14 +7,14 @@ import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
-import com.example.cinemabasegradle.service.MovieService;
+import com.example.cinemabasegradle.service.UserMovieService;
 import com.example.cinemabasegradle.service.SearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserMovieServiceImpl implements MovieService {
+public class UserMovieServiceImpl implements UserMovieService {
 
     private final UserMovieRepository userMovieRepository;
     private final UserRepository userRepository;
@@ -45,9 +45,6 @@ public class UserMovieServiceImpl implements MovieService {
     public MovieDto fetchFavouriteMovieById(Long id) {
         UserMovie userMovie = userMovieRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
-        if (userMovie == null) {
-            return null;
-        }
         MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
         movieDto.setPersonalRating(userMovie.getRating());
         movieDto.setPersonalNotes(userMovie.getNotes());
