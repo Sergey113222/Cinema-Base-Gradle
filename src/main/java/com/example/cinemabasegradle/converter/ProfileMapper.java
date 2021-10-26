@@ -1,4 +1,4 @@
-package com.example.cinemabasegradle.converter.impl;
+package com.example.cinemabasegradle.converter;
 
 import com.example.cinemabasegradle.dto.ProfileDto;
 import com.example.cinemabasegradle.model.Profile;
@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface ProfileConverterMapstruct {
+public interface ProfileMapper {
     Profile toModel(ProfileDto profileDto);
 
     ProfileDto toDto(Profile profile);
