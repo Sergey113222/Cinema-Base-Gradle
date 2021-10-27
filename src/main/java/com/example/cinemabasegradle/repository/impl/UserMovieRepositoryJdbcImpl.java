@@ -2,7 +2,6 @@ package com.example.cinemabasegradle.repository.impl;
 
 import com.example.cinemabasegradle.mapper.UserMovieRowMapper;
 import com.example.cinemabasegradle.model.UserMovie;
-import com.example.cinemabasegradle.repository.UserMovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +19,7 @@ import java.util.Optional;
 @Profile("jdbc")
 @Repository
 @RequiredArgsConstructor
-public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
+public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle.repository.UserMovieRepository {
 
     private static final String ID = "id";
     private static final String RATING = "rating";
@@ -73,6 +72,7 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     }
 
     @Override
+
     public void delete(UserMovie userMovie) {
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue(ID, userMovie.getId());

@@ -1,8 +1,8 @@
 package com.example.cinemabasegradle.model;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,6 +10,9 @@ import java.time.LocalDate;
 @MappedSuperclass
 @Getter
 @Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class BaseModel {
 
     @Id

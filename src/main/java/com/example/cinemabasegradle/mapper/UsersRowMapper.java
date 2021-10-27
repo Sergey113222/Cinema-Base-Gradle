@@ -20,7 +20,7 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String ACTIVE = "active";
     private static final String CREATED = "created";
 
-    private static final String PROFILE_ID = "p.id";
+    private static final String PROFILE_ID = "profile.id";
     private static final String AVATAR = "avatar";
     private static final String FIRST_NAME = "first_name";
     private static final String LAST_NAME = "last_name";

@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Profile("jdbc")
@@ -94,8 +95,8 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                 .addValue(PASSWORD, user.getPassword())
                 .addValue(ROLE, user.getRole().toString())
                 .addValue(ACTIVE, user.getActive())
-                .addValue(CREATED, new Date())
-                .addValue(UPDATED, new Date())
+                .addValue(CREATED, LocalDate.now())
+                .addValue(UPDATED, LocalDate.now())
                 .addValue(EMAIL, user.getEmail());
 
         if (user.getId()==null) {
@@ -113,8 +114,8 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                 .addValue(LAST_NAME, user.getProfile().getLastName())
                 .addValue(AGE, user.getProfile().getAge())
                 .addValue(LANGUAGE, user.getProfile().getLanguage())
-                .addValue(CREATED, new Date())
-                .addValue(UPDATED, new Date());
+                .addValue(CREATED, LocalDate.now())
+                .addValue(UPDATED, LocalDate.now());
 
         if (user.getProfile().getId()==null) {
         namedParameterJdbcTemplate.update(saveProfileQuery, paramSourceProfile, holder);

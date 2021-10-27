@@ -25,6 +25,7 @@ ext {
     jjwtVersion = '0.9.1'
     swaggerVersion = '3.0.0'
     h2Version = '1.4.200'
+    mockitoVersion = '1.10.19'
 }
 
 repositories {
@@ -54,6 +55,8 @@ repositories {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation "com.h2database:h2:${h2Version}"
+        testImplementation "org.mockito:mockito-all:${mockitoVersion}"
+
     }
 }
 

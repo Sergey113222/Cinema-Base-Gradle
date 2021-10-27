@@ -1,14 +1,18 @@
 package com.example.cinemabasegradle.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
 public class User extends BaseModel {
 
@@ -24,7 +28,6 @@ public class User extends BaseModel {
     @Column(name = "active")
     private Boolean active = true;
 
-
     @OneToOne(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Profile profile;
@@ -32,4 +35,6 @@ public class User extends BaseModel {
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<UserMovie> userMovieList;
+
+
 }
