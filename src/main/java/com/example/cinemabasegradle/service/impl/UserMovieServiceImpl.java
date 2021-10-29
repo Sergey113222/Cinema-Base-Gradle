@@ -28,9 +28,6 @@ public class UserMovieServiceImpl implements UserMovieService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
 
-        if ((user == null) || (movieDto == null)) {
-            return null;
-        }
         UserMovie userMovie = new UserMovie();
         userMovie.setUser(user);
         userMovie.setRating(movieDto.getPersonalRating());
