@@ -7,8 +7,8 @@ import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
-import com.example.cinemabasegradle.service.UserMovieService;
 import com.example.cinemabasegradle.service.SearchService;
+import com.example.cinemabasegradle.service.UserMovieService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class UserMovieServiceImpl implements UserMovieService {
 
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
-        Long userId = 16L;
+        Long userId = 1L;
         User user = userRepository
                 .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->

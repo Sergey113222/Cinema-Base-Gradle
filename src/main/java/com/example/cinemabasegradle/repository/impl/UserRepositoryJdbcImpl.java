@@ -13,7 +13,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Profile("jdbc")
 @Repository
@@ -62,8 +65,11 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     public Optional<User> findByIdAndActiveTrue(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put(ID, id);
-        User user = namedParameterJdbcTemplate.queryForObject(findByIdQuery, params, usersRowMapper);
-        return Optional.ofNullable(user);
+        List<User> users = namedParameterJdbcTemplate.query(findByIdQuery, params, usersRowMapper);
+        if (users.size() > 0) {
+            return Optional.ofNullable(users.get(0));
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -99,10 +105,10 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                 .addValue(UPDATED, LocalDate.now())
                 .addValue(EMAIL, user.getEmail());
 
-        if (user.getId()==null) {
+        if (user.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserQuery, paramSourceUser, holder);
             user.setId(holder.getKey().longValue());
-        }else {
+        } else {
             namedParameterJdbcTemplate.update(updateUserQuery, paramSourceUser);
         }
 
@@ -117,9 +123,10 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                 .addValue(CREATED, LocalDate.now())
                 .addValue(UPDATED, LocalDate.now());
 
-        if (user.getProfile().getId()==null) {
-        namedParameterJdbcTemplate.update(saveProfileQuery, paramSourceProfile, holder);
-        }else {
+        if (user.getProfile().getId() == null) {
+            namedParameterJdbcTemplate.update(saveProfileQuery, paramSourceProfile, holder);
+            user.getProfile().setId(holder.getKey().longValue());
+        } else {
             namedParameterJdbcTemplate.update(updateProfileQuery, paramSourceProfile);
         }
         return user;

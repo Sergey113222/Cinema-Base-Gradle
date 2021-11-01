@@ -2,17 +2,13 @@ package com.example.cinemabasegradle.controller;
 
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users")
 public class UserController {
     private final UserService userService;

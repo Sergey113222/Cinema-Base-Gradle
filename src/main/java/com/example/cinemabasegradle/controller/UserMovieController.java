@@ -35,14 +35,14 @@ public class UserMovieController {
 
     @PutMapping
     @ApiOperation(value = "update the user's favorite movie (rating and feedback)")
-    public ResponseEntity<MovieDto> updateFavouriteMovie(@RequestBody @Valid MovieDto movieDto, @RequestParam @Min(1) Long userMovieId) {
+    public ResponseEntity<Void> updateFavouriteMovie(@RequestBody @Valid MovieDto movieDto, @RequestParam @Min(1) Long userMovieId) {
         userMovieService.updateFavouriteMovie(movieDto, userMovieId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "delete the user's favorite movie")
-    public ResponseEntity<MovieDto> deleteFavouriteMovie(@PathVariable("id") @Min(1) Long id) {
+    public ResponseEntity<Void> deleteFavouriteMovie(@PathVariable("id") @Min(1) Long id) {
         userMovieService.deleteFavouriteMovie(id);
         return ResponseEntity.noContent().build();
     }

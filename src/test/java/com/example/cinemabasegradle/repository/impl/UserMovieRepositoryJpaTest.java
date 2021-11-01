@@ -6,18 +6,24 @@ import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
 @ActiveProfiles("jpa")
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserMovieRepositoryJpaTest {
     @Autowired
     private UserMovieRepository userMovieRepository;
@@ -28,8 +34,8 @@ class UserMovieRepositoryJpaTest {
     private UserMovie userMovie;
     private User user;
 
-
     @Test
+    @Order(1)
     void save() {
         user = User.builder()
                 .username("TestUserName")
@@ -64,6 +70,7 @@ class UserMovieRepositoryJpaTest {
     }
 
     @Test
+    @Order(2)
     void findById() {
         user = User.builder()
                 .username("TestUserName")
@@ -101,6 +108,8 @@ class UserMovieRepositoryJpaTest {
     }
 
     @Test
+    @Order(3)
+    @Sql(scripts = "classpath:/sql/deleteAll.sql", executionPhase = AFTER_TEST_METHOD)
     void delete() {
         user = User.builder()
                 .username("TestUserName")

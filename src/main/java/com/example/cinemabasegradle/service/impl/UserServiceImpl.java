@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         userDto.setRole(Role.ROLE_USER);
         User user = userMapper.toModel(userDto);
-
+        user.setActive(true);
         Profile profile = user.getProfile();
         profile.setUser(user);
         User createdUser = userRepository.save(user);

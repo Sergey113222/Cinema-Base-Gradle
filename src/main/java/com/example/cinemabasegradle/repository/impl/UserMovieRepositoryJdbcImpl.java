@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,8 +68,12 @@ public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle
     public Optional<UserMovie> findById(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put(ID, id);
-        UserMovie userMovie = namedParameterJdbcTemplate.queryForObject(findByIdQuery, params, userMovieRowMapper);
-        return Optional.ofNullable(userMovie);
+
+        List<UserMovie> userMovieList = namedParameterJdbcTemplate.query(findByIdQuery, params, userMovieRowMapper);
+        if (userMovieList.size() > 0) {
+            return Optional.ofNullable(userMovieList.get(0));
+        }
+        return Optional.empty();
     }
 
     @Override

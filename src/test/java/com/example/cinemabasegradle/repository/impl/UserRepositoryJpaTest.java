@@ -4,8 +4,7 @@ import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +19,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 
 @SpringBootTest
 @ActiveProfiles("jpa")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Sql(scripts = "classpath:/sql/user.sql", executionPhase = BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:/sql/deleteUser.sql", executionPhase = AFTER_TEST_METHOD)
 class UserRepositoryJpaTest {
@@ -53,7 +53,9 @@ class UserRepositoryJpaTest {
         profile.setUser(user);
     }
 
+
     @Test
+    @Order(1)
     void findByIdAndActiveTrue() {
         Optional<User> optionalUser = userRepository.findByIdAndActiveTrue(ID);
         assertTrue(optionalUser.isPresent());
@@ -63,12 +65,14 @@ class UserRepositoryJpaTest {
     }
 
     @Test
+    @Order(2)
     void findByUsername() {
         User user = userRepository.findByUsername(USERNAME);
         assertEquals(USERNAME, user.getUsername());
     }
 
     @Test
+    @Order(3)
     void findAll() {
         userRepository.save(user);
         List<User> userList = userRepository.findAll();
@@ -76,6 +80,7 @@ class UserRepositoryJpaTest {
     }
 
     @Test
+    @Order(4)
     void findByEmailAndActiveTrue() {
         Optional<User> optionalUser = userRepository.findByEmailAndActiveTrue(EMAIL);
         assertTrue(optionalUser.isPresent());
@@ -85,11 +90,14 @@ class UserRepositoryJpaTest {
     }
 
     @Test
+    @Order(5)
     void save() {
         assertNotNull(userRepository.save(user).getId());
     }
 
     @Test
+    @Order(5)
+    @Sql(scripts = "classpath:/sql/deleteAll.sql", executionPhase = AFTER_TEST_METHOD)
     void deleteUser() {
         Long id = userRepository.save(user).getId();
         userRepository.deleteUser(id);

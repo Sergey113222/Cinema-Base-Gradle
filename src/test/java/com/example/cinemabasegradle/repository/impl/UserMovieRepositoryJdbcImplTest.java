@@ -6,7 +6,10 @@ import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,10 +19,12 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @ActiveProfiles("jdbc")
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserMovieRepositoryJdbcImplTest {
 
     @Autowired
@@ -32,6 +37,7 @@ class UserMovieRepositoryJdbcImplTest {
     private User user;
 
     @Test
+    @Order(1)
     void save() {
         user = User.builder()
                 .username("TestUserName")
@@ -63,8 +69,9 @@ class UserMovieRepositoryJdbcImplTest {
         assertNotNull(userMovieRepository.save(userMovie).getId());
     }
 
-    @Sql(scripts = "classpath:/sql/userMovie.sql", executionPhase = BEFORE_TEST_METHOD)
     @Test
+    @Order(2)
+    @Sql(scripts = "classpath:/sql/userMovie.sql", executionPhase = BEFORE_TEST_METHOD)
     void findById() {
         Optional<UserMovie> optionalUserMovie = userMovieRepository.findById(USER_MOVIE_ID);
         UserMovie userMovieGet = optionalUserMovie.get();
@@ -72,6 +79,8 @@ class UserMovieRepositoryJdbcImplTest {
     }
 
     @Test
+    @Order(3)
+    @Sql(scripts = "classpath:/sql/deleteAll.sql", executionPhase = AFTER_TEST_METHOD)
     void delete() {
         user = User.builder()
                 .username("Test2UserName")
@@ -94,7 +103,7 @@ class UserMovieRepositoryJdbcImplTest {
 
         userMovie = UserMovie.builder()
 
-                .externalMovieId(999L)
+                .externalMovieId(602L)
                 .notes("This is the best film !!!")
                 .rating(8)
                 .user(savedUser)
