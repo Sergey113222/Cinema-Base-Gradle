@@ -38,13 +38,12 @@ class RegistrationControllerTest {
     private UserRepository userRepository;
 
     private UserDto userDto;
-    private User user;
     private Long userId;
 
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
+        User user = User.builder()
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
@@ -84,8 +83,7 @@ class RegistrationControllerTest {
     @Sql(scripts = "classpath:/sql/deleteUser.sql", executionPhase = AFTER_TEST_METHOD)
     void register() throws Exception {
 
-        String responseAsString = mockMvc
-                .perform(post("/registration/new")
+        mockMvc.perform(post("/registration/new")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
@@ -100,8 +98,7 @@ class RegistrationControllerTest {
     void updateUser() throws Exception {
         userDto.setEmail("update@mail.ru");
         userDto.setId(userId);
-        String responseAsString = mockMvc
-                .perform(put("/registration/update")
+        mockMvc.perform(put("/registration/update")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())

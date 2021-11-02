@@ -6,7 +6,6 @@ import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserRepository;
-import com.example.cinemabasegradle.repository.impl.UserMovieRepositoryJdbcImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -40,13 +39,11 @@ class UserMovieControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private UserMovieRepositoryJdbcImpl userMovieRepositoryJdbcImpl;
-    @Autowired
     private UserRepository userRepository;
 
-    private UserMovie userMovie;
-    private User user;
-    private MovieDto movieDto;
+    private final UserMovie userMovie;
+    private final User user;
+    private final MovieDto movieDto;
 
     {
         movieDto = new MovieDto();
@@ -87,8 +84,7 @@ class UserMovieControllerTest {
     @Order(1)
     void addToFavouriteMovie() throws Exception {
         userRepository.save(user);
-        String responseAsString = mockMvc
-                .perform(post("/favourite")
+        mockMvc.perform(post("/favourite")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(movieDto)))
                 .andExpect(status().isCreated())
@@ -116,8 +112,7 @@ class UserMovieControllerTest {
     @Order(3)
     void updateFavouriteMovie() throws Exception {
         movieDto.setPersonalRating(1);
-        String responseAsString = mockMvc
-                .perform(put("/favourite")
+        mockMvc.perform(put("/favourite")
                         .param("userMovieId", String.valueOf(1L))
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(movieDto)))
