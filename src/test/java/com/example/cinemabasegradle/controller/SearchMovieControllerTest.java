@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -77,6 +78,6 @@ class SearchMovieControllerTest {
                 .getResponse()
                 .getContentAsString();
         MovieDto movieDto = objectMapper.readValue(responseAsString, MovieDto.class);
-        assertTrue(movieDto.getTitle() != null);
+        assertNotNull(movieDto.getTitle());
     }
 }

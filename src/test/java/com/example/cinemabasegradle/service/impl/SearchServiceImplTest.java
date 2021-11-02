@@ -55,11 +55,13 @@ class SearchServiceImplTest {
 
     @Test
     void searchMoviesPopular() {
-        searchService.searchMoviesPopular();
+        List<MovieDto> apiDtoList = searchService.searchMoviesPopular();
+        assertTrue(apiDtoList.stream().count() > 0);
     }
 
     @Test
     void searchMovieLatest() {
-        searchService.searchMovieLatest();
+        MovieDto movieDto = searchService.searchMovieLatest();
+        assertNotNull(movieDto.getTitle());
     }
 }

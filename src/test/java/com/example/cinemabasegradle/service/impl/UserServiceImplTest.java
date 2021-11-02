@@ -10,7 +10,6 @@ import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -19,9 +18,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @ActiveProfiles("jdbc")
 class UserServiceImplTest {
 
@@ -107,7 +108,7 @@ class UserServiceImplTest {
         when(userRepository.findAll()).thenReturn(userList);
         when(userMapper.toDto(any())).thenReturn(userDto);
         List<UserDto> existedUsers = userService.findAllUsers();
-        assertTrue(existedUsers.stream().count()>0);
+        assertTrue(existedUsers.stream().count() > 0);
     }
 
     @Test

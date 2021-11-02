@@ -9,11 +9,13 @@ import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.SearchService;
 import com.example.cinemabasegradle.service.UserMovieService;
-import lombok.AllArgsConstructor;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 public class UserMovieServiceImpl implements UserMovieService {
 
     private final UserMovieRepository userMovieRepository;

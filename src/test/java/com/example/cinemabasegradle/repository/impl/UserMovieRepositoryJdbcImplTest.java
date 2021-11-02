@@ -18,7 +18,10 @@ import org.springframework.test.context.jdbc.Sql;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
@@ -32,7 +35,7 @@ class UserMovieRepositoryJdbcImplTest {
     @Autowired
     private UserRepository userRepository;
 
-    private final Long USER_MOVIE_ID = 99L;
+    private static final Long USER_MOVIE_ID = 99L;
     private UserMovie userMovie;
     private User user;
 

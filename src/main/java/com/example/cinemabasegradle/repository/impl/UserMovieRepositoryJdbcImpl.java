@@ -2,6 +2,7 @@ package com.example.cinemabasegradle.repository.impl;
 
 import com.example.cinemabasegradle.mapper.UserMovieRowMapper;
 import com.example.cinemabasegradle.model.UserMovie;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Profile("jdbc")
 @Repository
 @RequiredArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle.repository.UserMovieRepository {
 
     private static final String ID = "id";
@@ -57,7 +58,9 @@ public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle
                 .addValue(UPDATED, LocalDate.now());
         if (userMovie.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserMovieQuery, paramSource, holder);
-            userMovie.setId(holder.getKey().longValue());
+            if (holder != null && holder.getKey() != null) {
+                userMovie.setId((holder.getKey()).longValue());
+            }
         } else {
             namedParameterJdbcTemplate.update(updateUserMovieQuery, paramSource);
         }
@@ -68,12 +71,7 @@ public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle
     public Optional<UserMovie> findById(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put(ID, id);
-
-        List<UserMovie> userMovieList = namedParameterJdbcTemplate.query(findByIdQuery, params, userMovieRowMapper);
-        if (userMovieList.size() > 0) {
-            return Optional.ofNullable(userMovieList.get(0));
-        }
-        return Optional.empty();
+        return namedParameterJdbcTemplate.query(findByIdQuery, params, userMovieRowMapper).stream().findAny();
     }
 
     @Override

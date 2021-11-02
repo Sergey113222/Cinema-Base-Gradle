@@ -28,10 +28,10 @@ public class UserMovieRowMapper implements RowMapper<UserMovie> {
         userMovie.setRating(rs.getInt(RATING));
         userMovie.setNotes(rs.getString(NOTES));
         userMovie.setViewed(rs.getBoolean(VIEWED));
-        if (rs.getDate(CREATED)!=null) {
+        if (rs.getDate(CREATED) != null) {
             userMovie.setCreated(rs.getDate(CREATED).toLocalDate());
         }
-        if (rs.getDate(UPDATED)!=null) {
+        if (rs.getDate(UPDATED) != null) {
             userMovie.setCreated(rs.getDate(UPDATED).toLocalDate());
         }
         User user = new User();

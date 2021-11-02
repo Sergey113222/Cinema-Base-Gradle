@@ -2,6 +2,7 @@ package com.example.cinemabasegradle.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,9 +14,10 @@ import java.util.Date;
 import java.util.List;
 
 
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @JsonAutoDetect
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class MovieDto {
     @NotNull(message = "Name cannot be null")
     @JsonProperty("id")
@@ -39,3 +41,4 @@ public class MovieDto {
     @JsonProperty("personal_notes")
     private String personalNotes;
 }
+

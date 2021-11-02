@@ -9,6 +9,7 @@ import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.UserService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -47,7 +49,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllUsers() {
-        List<UserDto> userDtoList = userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+        List<UserDto> userDtoList = userRepository.findAll().stream().map(userMapper::toDto)
+                .collect(Collectors.toList());
         log.info("In findAll - users: {} successfully found", userDtoList.size());
         return userDtoList;
     }

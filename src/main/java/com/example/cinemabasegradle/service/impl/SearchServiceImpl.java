@@ -1,9 +1,10 @@
 package com.example.cinemabasegradle.service.impl;
 
+import com.example.cinemabasegradle.dto.ListResultsMovieDto;
 import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.cinemabasegradle.dto.SearchDto;
-import com.example.cinemabasegradle.dto.ListResultsMovieDto;
 import com.example.cinemabasegradle.service.SearchService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 public class SearchServiceImpl implements SearchService {
 
     private static final String API_KEY = "api_key";
@@ -70,7 +72,10 @@ public class SearchServiceImpl implements SearchService {
 
     private List<MovieDto> getMoviesListFromResource(URI uri) {
         ListResultsMovieDto request = restTemplate.getForObject(uri, ListResultsMovieDto.class);
-        return request.getResults();
+        if (request != null) {
+            return request.getResults();
+        }
+        return null;
     }
 
     private MovieDto getMovieFromResource(URI uri) {

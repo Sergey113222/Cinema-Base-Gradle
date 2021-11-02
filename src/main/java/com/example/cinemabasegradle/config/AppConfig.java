@@ -14,17 +14,18 @@ import org.springframework.web.client.RestTemplate;
 @PropertySource("classpath:sql-query.properties")
 public class AppConfig {
 
+    private static final Integer TIMEOUT = 5000;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate(getClientHttpRequestFactory());
     }
 
     private ClientHttpRequestFactory getClientHttpRequestFactory() {
-        int timeout = 5000;
         RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(timeout)
-                .setConnectionRequestTimeout(timeout)
-                .setSocketTimeout(timeout)
+                .setConnectTimeout(TIMEOUT)
+                .setConnectionRequestTimeout(TIMEOUT)
+                .setSocketTimeout(TIMEOUT)
                 .build();
         CloseableHttpClient client = HttpClientBuilder
                 .create()

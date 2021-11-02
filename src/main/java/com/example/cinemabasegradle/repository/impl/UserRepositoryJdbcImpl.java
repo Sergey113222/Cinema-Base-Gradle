@@ -3,6 +3,7 @@ package com.example.cinemabasegradle.repository.impl;
 import com.example.cinemabasegradle.mapper.UsersRowMapper;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Profile("jdbc")
 @Repository
 @RequiredArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class UserRepositoryJdbcImpl implements UserRepository {
 
     private static final String ID = "id";
@@ -65,11 +67,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     public Optional<User> findByIdAndActiveTrue(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put(ID, id);
-        List<User> users = namedParameterJdbcTemplate.query(findByIdQuery, params, usersRowMapper);
-        if (users.size() > 0) {
-            return Optional.ofNullable(users.get(0));
-        }
-        return Optional.empty();
+        return namedParameterJdbcTemplate.query(findByIdQuery, params, usersRowMapper).stream().findAny();
     }
 
     @Override
@@ -107,7 +105,9 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
         if (user.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserQuery, paramSourceUser, holder);
-            user.setId(holder.getKey().longValue());
+            if (holder != null && holder.getKey() != null) {
+                user.setId((holder.getKey()).longValue());
+            }
         } else {
             namedParameterJdbcTemplate.update(updateUserQuery, paramSourceUser);
         }
@@ -125,7 +125,9 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
         if (user.getProfile().getId() == null) {
             namedParameterJdbcTemplate.update(saveProfileQuery, paramSourceProfile, holder);
-            user.getProfile().setId(holder.getKey().longValue());
+            if (holder != null && holder.getKey() != null && user.getProfile() != null) {
+                user.getProfile().setId((holder.getKey()).longValue());
+            }
         } else {
             namedParameterJdbcTemplate.update(updateProfileQuery, paramSourceProfile);
         }
