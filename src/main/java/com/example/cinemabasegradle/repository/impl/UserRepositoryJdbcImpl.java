@@ -23,7 +23,7 @@ import java.util.Optional;
 @Profile("jdbc")
 @Repository
 @RequiredArgsConstructor
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class UserRepositoryJdbcImpl implements UserRepository {
 
     private static final String ID = "id";

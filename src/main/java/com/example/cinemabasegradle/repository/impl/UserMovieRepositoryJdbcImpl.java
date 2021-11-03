@@ -21,7 +21,7 @@ import java.util.Optional;
 @Profile("jdbc")
 @Repository
 @RequiredArgsConstructor
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle.repository.UserMovieRepository {
 
     private static final String ID = "id";
