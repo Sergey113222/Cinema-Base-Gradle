@@ -1,12 +1,14 @@
 package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.dto.MovieDto;
+import com.example.cinemabasegradle.exception.ResourceNotFoundException;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -14,7 +16,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,5 +101,47 @@ class UserMovieServiceImplTest {
         when(userMovieRepository.findById(userMovie.getId())).thenReturn(Optional.of(userMovie));
         userMovieService.deleteFavouriteMovie(1L);
         verify(userMovieRepository).delete(userMovie);
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when userMovie doesn't exist.")
+    void throwExceptionWhenFindById() {
+        final long nonExistingId = 12902450235L;
+
+        doReturn(Optional.empty()).when(userMovieRepository).findById(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userMovieService.fetchFavouriteMovieById(nonExistingId));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when userMovie doesn't exist.")
+    void throwExceptionWhenFetchFavouriteMovieById() {
+        final long nonExistingId = 12902450235L;
+
+        doReturn(Optional.empty()).when(userMovieRepository).findById(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userMovieService.fetchFavouriteMovieById(nonExistingId));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when userMovie doesn't exist.")
+    void throwExceptionWhenDeleteFavouriteMovie() {
+        final long nonExistingId = 12902450235L;
+        doReturn(Optional.empty()).when(userMovieRepository).findById(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userMovieService.deleteFavouriteMovie(nonExistingId));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when userMovie doesn't exist.")
+    void throwExceptionWhenUpdateFavouriteMovie() {
+        final long nonExistingId = 12902450235L;
+        doReturn(Optional.empty()).when(userMovieRepository).findById(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userMovieService.updateFavouriteMovie(movieDto, nonExistingId));
     }
 }

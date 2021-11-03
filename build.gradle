@@ -101,6 +101,7 @@ sonarqube {
         property('sonar.jacoco.xmlReportPaths', jacocoTestReport.reports.xml.outputLocation)
         property 'sonar.exclusions', "**/dto/**," +
                 "**/model/**," +
+                "**/exception/**," +
                 "**/config/**"
     }
 }

@@ -75,7 +75,6 @@ public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle
     }
 
     @Override
-
     public void delete(UserMovie userMovie) {
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue(ID, userMovie.getId());

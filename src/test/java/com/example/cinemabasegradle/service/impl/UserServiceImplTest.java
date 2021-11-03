@@ -3,12 +3,14 @@ package com.example.cinemabasegradle.service.impl;
 import com.example.cinemabasegradle.converter.UserMapper;
 import com.example.cinemabasegradle.dto.ProfileDto;
 import com.example.cinemabasegradle.dto.UserDto;
+import com.example.cinemabasegradle.exception.ResourceNotFoundException;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -17,8 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -139,5 +143,27 @@ class UserServiceImplTest {
     void deleteUser() {
         userService.deleteUser(userDto.getId());
         verify(userRepository).deleteUser(userDto.getId());
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when user doesn't exist.")
+    void throwExceptionWhenFindUserById() {
+        final long nonExistingId = 12902450235L;
+
+        doReturn(Optional.empty()).when(userRepository).findByIdAndActiveTrue(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userService.findUserById(nonExistingId));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when user doesn't exist.")
+    void throwExceptionWhenUpdateUser() {
+        final long nonExistingId = 12902450235L;
+        userDto.setId(nonExistingId);
+        doReturn(Optional.empty()).when(userRepository).findByIdAndActiveTrue(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userService.updateUser(userDto));
     }
 }

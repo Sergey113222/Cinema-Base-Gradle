@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    @Transactional
     @Override
+    @Transactional
     public UserDto createUser(UserDto userDto) {
         userDto.setRole(Role.ROLE_USER);
         User user = userMapper.toModel(userDto);
@@ -63,12 +63,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateUser(UserDto userDto) {
         Long id = userDto.getId();
         User existed = userRepository.findByIdAndActiveTrue(id).orElseThrow(() ->
-                new IllegalArgumentException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
+                new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         existed.setUsername(userDto.getUsername());
         existed.setPassword((userDto.getPassword()));
         existed.setEmail(userDto.getEmail());
@@ -88,8 +88,8 @@ public class UserServiceImpl implements UserService {
         userRepository.save(existed);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteUser(id);
         log.info("In deleteUser successfully deleted by id: {}", id);
