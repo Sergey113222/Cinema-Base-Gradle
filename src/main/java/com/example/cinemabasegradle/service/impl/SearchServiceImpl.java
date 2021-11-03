@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -72,10 +73,7 @@ public class SearchServiceImpl implements SearchService {
 
     private List<MovieDto> getMoviesListFromResource(URI uri) {
         ListResultsMovieDto request = restTemplate.getForObject(uri, ListResultsMovieDto.class);
-        if (request != null) {
-            return request.getResults();
-        }
-        return null;
+                    return Objects.requireNonNull(request).getResults();
     }
 
     private MovieDto getMovieFromResource(URI uri) {

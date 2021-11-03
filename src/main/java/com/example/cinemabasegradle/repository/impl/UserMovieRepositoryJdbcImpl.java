@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Profile("jdbc")
@@ -58,9 +59,8 @@ public class UserMovieRepositoryJdbcImpl implements com.example.cinemabasegradle
                 .addValue(UPDATED, LocalDate.now());
         if (userMovie.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserMovieQuery, paramSource, holder);
-            if (holder != null && holder.getKey() != null) {
-                userMovie.setId((holder.getKey()).longValue());
-            }
+            userMovie.setId((Objects.requireNonNull(holder.getKey())).longValue());
+
         } else {
             namedParameterJdbcTemplate.update(updateUserMovieQuery, paramSource);
         }

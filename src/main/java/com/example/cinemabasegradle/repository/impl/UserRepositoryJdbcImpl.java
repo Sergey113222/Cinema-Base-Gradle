@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Profile("jdbc")
@@ -105,9 +106,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
         if (user.getId() == null) {
             namedParameterJdbcTemplate.update(saveUserQuery, paramSourceUser, holder);
-            if (holder != null && holder.getKey() != null) {
-                user.setId((holder.getKey()).longValue());
-            }
+                user.setId((Objects.requireNonNull(holder.getKey())).longValue());
         } else {
             namedParameterJdbcTemplate.update(updateUserQuery, paramSourceUser);
         }
@@ -125,9 +124,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
         if (user.getProfile().getId() == null) {
             namedParameterJdbcTemplate.update(saveProfileQuery, paramSourceProfile, holder);
-            if (holder != null && holder.getKey() != null && user.getProfile() != null) {
-                user.getProfile().setId((holder.getKey()).longValue());
-            }
+                user.getProfile().setId((Objects.requireNonNull(holder.getKey())).longValue());
         } else {
             namedParameterJdbcTemplate.update(updateProfileQuery, paramSourceProfile);
         }
