@@ -8,13 +8,19 @@ pipeline {
         pollSCM('H * * * *')
     }
 
-    stage("Build & Tests") {
+    stages {
+        stage("Checkout") {
+            steps {
+                git branch: 'profileJdbc', changelog: true, poll: true, url:
+                'https://github.com/Sergey113222/Cinema-Base-Gradle.git'
+            }
+        }
+        stage("Build & Tests") {
             steps {
                 script {
-                        sh './gradlew clean test --no-daemon' //run a gradle task
+                       sh './gradlew clean test --no-daemon' //run a gradle task
                 }
             }
+        }
     }
-
-
 }
