@@ -1,1 +1,2 @@
 # Cinema-Base-Gradle
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Sergey113222_Cinema-Base-Gradle&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Sergey113222_Cinema-Base-Gradle)

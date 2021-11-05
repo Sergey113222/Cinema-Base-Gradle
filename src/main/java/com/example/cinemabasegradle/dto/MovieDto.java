@@ -2,20 +2,24 @@ package com.example.cinemabasegradle.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
 
 
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @JsonAutoDetect
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class MovieDto {
+    @NotNull(message = "Name cannot be null")
     @JsonProperty("id")
     private Long externalMovieId;
     private String title;
@@ -27,8 +31,8 @@ public class MovieDto {
     private Double voteAverage;
     private String overview;
     private Boolean adult;
-    @JsonProperty("genre_ids")
-    private List<Long> genreIds;
+    @JsonProperty("genres")
+    private List<ExternalGenreDto> genreDtoList;
     @JsonProperty("personal_rating")
     @Min(value = 0, message = "Rating should be between [0-10]")
     @Max(value = 10, message = "Rating should be between [0-10]")
@@ -37,3 +41,4 @@ public class MovieDto {
     @JsonProperty("personal_notes")
     private String personalNotes;
 }
+

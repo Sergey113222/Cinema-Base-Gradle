@@ -1,36 +1,41 @@
 package com.example.cinemabasegradle.model;
 
-import lombok.Data;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 @Entity
-@Data
 @Table(name = "profile")
 public class Profile extends BaseModel {
 
     @Column(name = "avatar")
     private String avatar;
-    @Column(name = "about")
-    private String about;
-    @Column(name = "email")
-    private String email;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "age")
     private Integer age;
-    @Column(name = "gender")
-    private String gender;
-    @Column(name = "region")
-    private String region;
     @Column(name = "language")
     private String language;
 
-    @OneToOne(mappedBy = "profile")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }

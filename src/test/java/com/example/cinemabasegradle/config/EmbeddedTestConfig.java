@@ -8,12 +8,11 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 
 @Configuration
 public class EmbeddedTestConfig {
     @Bean
-    public DataSource dataSource() throws IOException {
+    public DataSource dataSource() {
         EmbeddedDatabaseBuilder databaseBuilder = new EmbeddedDatabaseBuilder();
         return databaseBuilder.setType(EmbeddedDatabaseType.H2).build();
     }

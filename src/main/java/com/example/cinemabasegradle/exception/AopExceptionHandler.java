@@ -18,6 +18,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Slf4j
 public class AopExceptionHandler {
 
+    private static final Integer UNAUTHORIZED_CODE = 401;
+
     @ExceptionHandler
     public ResponseEntity<ExceptionDto> handleException(ResourceNotFoundException ex) {
         ExceptionDto exceptionDto = new ExceptionDto();
@@ -51,7 +53,7 @@ public class AopExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             ExceptionDto exceptionDto = new ExceptionDto();
             exceptionDto.setErrorMessage(String.format("%s - %s", fieldName, errorMessage));
-            exceptionDto.setStatus(401);
+            exceptionDto.setStatus(UNAUTHORIZED_CODE);
             exceptionDto.setTimestamp(LocalDateTime.now());
             exceptionDtoList.add(exceptionDto);
         });

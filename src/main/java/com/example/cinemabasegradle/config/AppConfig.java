@@ -5,12 +5,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@PropertySource("classpath:sql-query.properties")
 public class AppConfig {
+
+    private static final Integer TIMEOUT = 5000;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -18,11 +22,10 @@ public class AppConfig {
     }
 
     private ClientHttpRequestFactory getClientHttpRequestFactory() {
-        int timeout = 5000;
         RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(timeout)
-                .setConnectionRequestTimeout(timeout)
-                .setSocketTimeout(timeout)
+                .setConnectTimeout(TIMEOUT)
+                .setConnectionRequestTimeout(TIMEOUT)
+                .setSocketTimeout(TIMEOUT)
                 .build();
         CloseableHttpClient client = HttpClientBuilder
                 .create()

@@ -1,46 +1,50 @@
 package com.example.cinemabasegradle.model;
 
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 
-@Entity
-@AllArgsConstructor
+@Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+@Entity
 @Table(name = "user")
 public class User extends BaseModel {
 
     @Column(name = "username")
-    @Getter
-    @Setter
     private String username;
-
     @Column(name = "password")
-    @Getter
-    @Setter
     private String password;
-
+    @Column(name = "email")
+    private String email;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    @Getter
-    @Setter
     private Role role;
-
     @Column(name = "active")
-    @Getter
-    @Setter
-    private Boolean active = true;
+    private Boolean active;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
-    @Getter
-    @Setter
+    @OneToOne(mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Profile profile;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<UserMovie> userMovies;
+    @OneToMany(mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<UserMovie> userMovieList;
 }

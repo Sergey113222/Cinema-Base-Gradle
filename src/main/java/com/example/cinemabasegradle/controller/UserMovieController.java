@@ -1,11 +1,20 @@
 package com.example.cinemabasegradle.controller;
 
 import com.example.cinemabasegradle.dto.MovieDto;
-import com.example.cinemabasegradle.service.MovieService;
+import com.example.cinemabasegradle.service.UserMovieService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -13,37 +22,39 @@ import javax.validation.constraints.Min;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/favourite")
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class UserMovieController {
 
-    private final MovieService movieService;
+    private final UserMovieService userMovieService;
 
     @PostMapping
     @ApiOperation(value = "adds a movie to an authenticated user (you can leave your rating and feedback)")
     public ResponseEntity<Long> addToFavouriteMovie(@RequestBody @Valid MovieDto movieDto) {
-        Long createdMovieDtoId = movieService.addToFavouriteMovies(movieDto);
+        Long createdMovieDtoId = userMovieService.addToFavouriteMovies(movieDto);
         return ResponseEntity.status(CREATED).body(createdMovieDtoId);
     }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "finds the user's favorite movie")
     public ResponseEntity<MovieDto> findFavouriteMovieById(@PathVariable("id") @Min(1) Long id) {
-        MovieDto movieDto = movieService.fetchFavouriteMovieById(id);
+        MovieDto movieDto = userMovieService.fetchFavouriteMovieById(id);
         return ResponseEntity.ok().body(movieDto);
     }
 
     @PutMapping
     @ApiOperation(value = "update the user's favorite movie (rating and feedback)")
-    public ResponseEntity<MovieDto> updateFavouriteMovie(@RequestBody @Valid MovieDto movieDto, @RequestParam @Min(1) Long userMovieId) {
-        movieService.updateFavouriteMovie(movieDto, userMovieId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> updateFavouriteMovie(@RequestBody @Valid MovieDto movieDto,
+                                                     @RequestParam @Min(1) Long userMovieId) {
+        userMovieService.updateFavouriteMovie(movieDto, userMovieId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "delete the user's favorite movie")
-    public ResponseEntity<MovieDto> deleteFavouriteMovie(@PathVariable("id") @Min(1) Long id) {
-        movieService.deleteFavouriteMovie(id);
+    public ResponseEntity<Void> deleteFavouriteMovie(@PathVariable("id") @Min(1) Long id) {
+        userMovieService.deleteFavouriteMovie(id);
         return ResponseEntity.noContent().build();
     }
 }

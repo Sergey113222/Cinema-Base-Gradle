@@ -2,44 +2,36 @@ package com.example.cinemabasegradle.controller;
 
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users")
-@Api(tags = "controller-only-for-ADMIN")
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Find User by id")
     public UserDto findUserById(@PathVariable("id") Long id) {
         return userService.findUserById(id);
     }
 
-    @GetMapping(value = "/param")
-    @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Find all sorted Users (choose type of sort(ASC/DESC) and by which column to sort)")
-    public List<UserDto> findAllUsersSorted(
-            @RequestParam Sort.Direction direction,
-            @RequestParam String sortColumn) {
-        return userService.findAllUsers(direction, sortColumn);
+    @GetMapping
+    public List<UserDto> findAllUsers() {
+        return userService.findAllUsers();
     }
 
     @DeleteMapping("/{id}")
-    @RolesAllowed("ADMIN")
-    @ApiOperation(value = "Delete User by id")
     public void deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }
-
 }
 

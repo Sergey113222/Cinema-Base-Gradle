@@ -51,8 +51,8 @@ public class SpringFoxConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Cinema-base Rest Application")
-                .description("App connects to the API of https://www.themoviedb.org \n" +
-                        " and search, view movie descriptions, add reviews and save your favorite movies to the database.")
+                .description("App connects to the API of https://www.themoviedb.org \n"
+                        + " and search, view movie description, add review and save your favorite movies to database")
                 .version("v1")
                 .build();
     }

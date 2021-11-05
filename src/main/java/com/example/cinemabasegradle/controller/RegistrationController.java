@@ -2,14 +2,20 @@ package com.example.cinemabasegradle.controller;
 
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.service.UserService;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/registration")
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class RegistrationController {
 
     private final UserService userService;
@@ -23,5 +29,4 @@ public class RegistrationController {
     public void updateUser(@RequestBody @Valid UserDto userDto) {
         userService.updateUser(userDto);
     }
-
 }
