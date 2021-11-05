@@ -18,7 +18,7 @@ pipeline {
         stage("Build & Tests") {
             steps {
                 script {
-                       sh './gradlew clean test --no-daemon' //run a gradle task
+                       sh 'gradlew clean  ' //run a gradle task
                 }
             }
         }
