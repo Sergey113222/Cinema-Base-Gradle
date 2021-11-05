@@ -22,5 +22,26 @@ pipeline {
                 }
             }
         }
+        stage("SonarQube Report") {
+            steps {
+                script {
+                       bat 'gradlew sonarqube ' //run a gradle task
+                }
+            }
+        }
     }
+    post {
+            always {
+                echo 'Build is completed'
+            }
+            success {
+                echo 'Build is successful'
+            }
+            failure {
+                echo 'Build is failed'
+            }
+            changed {
+                echo 'The state of the Pipeline has changed'
+            }
+        }
 }
