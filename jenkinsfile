@@ -8,36 +8,13 @@ pipeline {
         pollSCM('H * * * *')
     }
 
-    stages {
-        stage("Checkout") {
-            steps {
-                git branch: 'profileJdbc', changelog: true, poll: true, url:
-                'https://github.com/Sergey113222/Cinema-Base-Gradle.git'
-            }
-        }
-        stage("Build & Tests") {
+    stage("Build & Tests") {
             steps {
                 script {
-                    try {
                         sh './gradlew clean test --no-daemon' //run a gradle task
-                    } finally {
-                        junit '**/build/test-results/test/*.xml' //make the junit test results available in any case (success & failure)
-                    }
                 }
             }
-        }
-    post {
-        always {
-            echo 'Build is completed'
-        }
-        success {
-            echo 'Build is successful'
-        }
-        failure {
-            echo 'Build is failed'
-        }
-        changed {
-            echo 'The state of the Pipeline has changed'
-        }
     }
+
+
 }
