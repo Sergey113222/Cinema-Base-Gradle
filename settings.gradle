@@ -1,1 +1,8 @@
 rootProject.name = 'cinema-base-gradle'
+
+include 'dao'
+include 'common'
+include 'rest'
+include 'service'
+include 'generator'
+include 'database'

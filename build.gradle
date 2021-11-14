@@ -22,55 +22,38 @@ configurations {
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 }
 
-ext {
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "org.sonarqube"
+    apply plugin: 'jacoco'
+    apply plugin: 'checkstyle'
+    apply plugin: 'com.github.spotbugs'
 
-    lombokVersion = '1.18.20'
-    lombokMapstructBindingVersion = '0.2.0'
-    mapstructVersion = '1.4.2.Final'
-    hibernateValidatorVersion = '6.1.6.Final'
-    commonsLang3Version = '3.12.0'
-    commonsIoVersion = '2.11.0'
-    httpClientVersion = '4.5.13'
-    jjwtVersion = '0.9.1'
-    swaggerVersion = '3.0.0'
-    h2Version = '1.4.200'
-    mockitoVersion = '1.10.19'
-    findbugsVersion = '3.0.1'
-}
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.liquibase:liquibase-core'
+    ext {
+        lombokVersion = '1.18.20'
+        findbugsVersion = '3.0.1'
+    }
 
-    runtimeOnly 'mysql:mysql-connector-java'
-    implementation "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
-    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
-    implementation "commons-io:commons-io:${commonsIoVersion}"
-    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
-    //lombok
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    implementation "org.projectlombok:lombok:${lombokVersion}"
-    //lombok-mapstruct
-    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
-    implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    //swagger
-    implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
+    dependencies {
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        implementation "org.projectlombok:lombok:${lombokVersion}"
+        //spotbugs
+        implementation "com.google.code.findbugs:annotations:${findbugsVersion}"
+    }
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation "com.h2database:h2:${h2Version}"
-    testImplementation "org.mockito:mockito-all:${mockitoVersion}"
-
-    compileOnly "com.google.code.findbugs:annotations:${findbugsVersion}"
+    test {
+        useJUnitPlatform()
+    }
 }
 
 //jacoco
@@ -78,18 +61,18 @@ test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
-jacocoTestReport {
-    group = "Reporting"
-    sourceSets sourceSets.main
-    executionData test
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.enabled true
-        xml.destination file("${buildDir}/jacoco/coverage.xml")
-        html.destination file("${buildDir}/jacoco/coverage")
+    jacocoTestReport {
+        group = "Reporting"
+        sourceSets sourceSets.main
+        executionData test
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.enabled true
+            xml.destination file("${buildDir}/jacoco/coverage.xml")
+            html.destination file("${buildDir}/jacoco/coverage")
+        }
     }
-}
 
 //sonarqube
 sonarqube {
@@ -119,6 +102,6 @@ spotbugsMain {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com/example/cinemabasegradle/CinemaBaseGradleApplication'
+        attributes 'Main-Class': 'rest/src/main/java/com/example/cinemabasegradle/CinemaBaseGradleApplication'
     }
 }

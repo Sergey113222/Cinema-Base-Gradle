@@ -1,0 +1,23 @@
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+bootJar {
+    enabled = false
+}
+
+ext{
+    h2Version = '1.4.200'
+    commonsIoVersion = '2.11.0'
+}
+
+dependencies {
+    implementation project(path: ':common', configuration: 'default')
+    implementation project(path: ':database', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation "commons-io:commons-io:${commonsIoVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "com.h2database:h2:${h2Version}"
+}
+
+

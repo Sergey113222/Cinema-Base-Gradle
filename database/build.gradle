@@ -1,0 +1,14 @@
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+bootJar {
+    enabled = false
+}
+
+dependencies {
+    implementation 'org.liquibase:liquibase-core'
+}
+
+test {
+    useJUnitPlatform()
+}
