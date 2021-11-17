@@ -1,0 +1,15 @@
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+bootJar {
+    enabled = false
+}
+
+dependencies {
+    implementation project(path: ':common', configuration: 'default')
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                git branch: 'profileJdbc', changelog: true, poll: true, url:
+                git branch: 'develop', changelog: true, poll: true, url:
                 'https://github.com/Sergey113222/Cinema-Base-Gradle.git'
             }
         }

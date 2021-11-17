@@ -12,8 +12,8 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.toVersion("11")
-    targetCompatibility = JavaVersion.toVersion("11")
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 configurations {
@@ -22,62 +22,71 @@ configurations {
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 }
 
-ext {
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "org.sonarqube"
+    apply plugin: 'jacoco'
+    apply plugin: 'checkstyle'
+    apply plugin: 'com.github.spotbugs'
 
-    lombokVersion = '1.18.20'
-    lombokMapstructBindingVersion = '0.2.0'
-    mapstructVersion = '1.4.2.Final'
-    hibernateValidatorVersion = '6.1.6.Final'
-    commonsLang3Version = '3.12.0'
-    commonsIoVersion = '2.11.0'
-    httpClientVersion = '4.5.13'
-    jjwtVersion = '0.9.1'
-    swaggerVersion = '3.0.0'
-    h2Version = '1.4.200'
-    mockitoVersion = '1.10.19'
-    findbugsVersion = '3.0.1'
+
+    ext {
+        lombokVersion = '1.18.20'
+        findbugsVersion = '3.0.1'
+    }
+
+    dependencies {
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        implementation "org.projectlombok:lombok:${lombokVersion}"
+        //spotbugs
+        implementation "com.google.code.findbugs:annotations:${findbugsVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.enabled true
+            xml.destination file("${buildDir}/jacoco/coverage.xml")
+            html.destination file("${buildDir}/jacoco/coverage")
+        }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.projectName", project.name
+            property "sonar.projectKey", "Cinema-Base_Gradle:${project.name}"
+            property 'sonar.exclusions', "**/dto/**," +
+                    "**/model/**," +
+                    "**/exception/**," +
+                    "**/config/**"
+        }
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.liquibase:liquibase-core'
-
-    runtimeOnly 'mysql:mysql-connector-java'
-    implementation "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
-    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
-    implementation "commons-io:commons-io:${commonsIoVersion}"
-    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
-    //lombok
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    implementation "org.projectlombok:lombok:${lombokVersion}"
-    //lombok-mapstruct
-    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
-    implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    //swagger
-    implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation "com.h2database:h2:${h2Version}"
-    testImplementation "org.mockito:mockito-all:${mockitoVersion}"
-
-    compileOnly "com.google.code.findbugs:annotations:${findbugsVersion}"
+bootJar {
+    enabled = false
 }
 
-//jacoco
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
+
 jacocoTestReport {
     group = "Reporting"
     sourceSets sourceSets.main
@@ -91,7 +100,6 @@ jacocoTestReport {
     }
 }
 
-//sonarqube
 sonarqube {
     properties {
         property "sonar.projectKey", "Sergey113222_Cinema-Base-Gradle"
@@ -106,7 +114,6 @@ sonarqube {
     }
 }
 
-spotbugs
 spotbugsMain {
     reports {
         html {
@@ -114,11 +121,5 @@ spotbugsMain {
             destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
             stylesheet = 'fancy-hist.xsl'
         }
-    }
-}
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'com/example/cinemabasegradle/CinemaBaseGradleApplication'
     }
 }

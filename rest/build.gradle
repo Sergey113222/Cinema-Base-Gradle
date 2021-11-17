@@ -1,0 +1,32 @@
+plugins{
+    id("maven-publish")
+}
+
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+bootJar {
+    enabled = true
+}
+
+ext{
+    h2Version = '1.4.200'
+}
+
+dependencies {
+    implementation project(path: ':service', configuration: 'default')
+    implementation project(path: ':generator', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.liquibase:liquibase-core'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "com.h2database:h2:${h2Version}"
+}
+
+publishing {
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
