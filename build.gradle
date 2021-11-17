@@ -12,8 +12,8 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.toVersion("11")
-    targetCompatibility = JavaVersion.toVersion("11")
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 configurations {
@@ -53,18 +53,10 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
     }
-}
 
-//jacoco
-test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
-}
     jacocoTestReport {
-        group = "Reporting"
-        sourceSets sourceSets.main
-        executionData test
         reports {
             xml.enabled true
             csv.enabled false
@@ -74,7 +66,40 @@ test {
         }
     }
 
-//sonarqube
+    sonarqube {
+        properties {
+            property "sonar.projectName", project.name
+            property "sonar.projectKey", "Cinema-Base_Gradle:${project.name}"
+            property 'sonar.exclusions', "**/dto/**," +
+                    "**/model/**," +
+                    "**/exception/**," +
+                    "**/config/**"
+        }
+    }
+}
+
+bootJar {
+    enabled = false
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    sourceSets sourceSets.main
+    executionData test
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+        xml.destination file("${buildDir}/jacoco/coverage.xml")
+        html.destination file("${buildDir}/jacoco/coverage")
+    }
+}
+
 sonarqube {
     properties {
         property "sonar.projectKey", "Sergey113222_Cinema-Base-Gradle"
@@ -89,7 +114,6 @@ sonarqube {
     }
 }
 
-spotbugs
 spotbugsMain {
     reports {
         html {
@@ -97,11 +121,5 @@ spotbugsMain {
             destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
             stylesheet = 'fancy-hist.xsl'
         }
-    }
-}
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'rest/src/main/java/com/example/cinemabasegradle/CinemaBaseGradleApplication'
     }
 }

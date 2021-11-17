@@ -58,11 +58,18 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private String updateProfileQuery;
     @Value("${sql.user.delete}")
     private String deleteQuery;
+    @Value("${sql.user.deleteAllUser}")
+    private String deleteAllUserQuery;
+    @Value("${sql.user.deleteAllProfile}")
+    private String deleteAllProfileQuery;
+    @Value("${sql.user.saveAll}")
+    private String saveAllUserQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final UsersRowMapper usersRowMapper;
 
-    public UserRepositoryJdbcImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate, UsersRowMapper usersRowMapper) {
+    public UserRepositoryJdbcImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                                  UsersRowMapper usersRowMapper) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.usersRowMapper = usersRowMapper;
     }
@@ -139,5 +146,27 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue(ID, id);
         namedParameterJdbcTemplate.update(deleteQuery, paramSource);
+    }
+
+    public void deleteAllUser() {
+        SqlParameterSource paramSource = new MapSqlParameterSource();
+        namedParameterJdbcTemplate.update(deleteAllProfileQuery, paramSource);
+        namedParameterJdbcTemplate.update(deleteAllUserQuery, paramSource);
+    }
+
+    public void saveAllUser(List<User> userList) {
+        MapSqlParameterSource[] params = new MapSqlParameterSource[userList.size()];
+        for (int i = 0; i < userList.size(); i++) {
+            params[i] = new MapSqlParameterSource()
+                    .addValue(ID, userList.get(i).getId())
+                    .addValue(USERNAME, userList.get(i).getUsername())
+                    .addValue(PASSWORD, userList.get(i).getPassword())
+                    .addValue(ROLE, userList.get(i).getRole().toString())
+                    .addValue(ACTIVE, userList.get(i).getActive())
+                    .addValue(CREATED, LocalDate.now())
+                    .addValue(UPDATED, LocalDate.now())
+                    .addValue(EMAIL, userList.get(i).getEmail());
+        }
+        namedParameterJdbcTemplate.batchUpdate(saveUserQuery, params);
     }
 }
