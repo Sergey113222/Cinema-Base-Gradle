@@ -8,6 +8,9 @@ bootJar {
 dependencies {
     implementation project(path: ':common', configuration: 'default')
     implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+
 }
 
 test {

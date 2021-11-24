@@ -2,7 +2,7 @@ package com.example.cinemabasegradle.controller;
 
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.impl.UserRepositoryJdbcImpl;
-import com.example.cinemabasegradle.service.FakerService;
+import com.example.cinemabasegradle.service.impl.FakerServiceImpl;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StopWatch;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping(value = "/faker")
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class FakerController {
-    private final FakerService fakerService;
+    private final FakerServiceImpl fakerService;
     private final UserRepositoryJdbcImpl userRepositoryJdbc;
     private final StopWatch timer = new StopWatch();
 
