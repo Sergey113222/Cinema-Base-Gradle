@@ -1,7 +1,7 @@
 package com.example.cinemabasegradle.model;
 
 
-import com.example.LocalDateAdapter;
+import com.example.cinemabasegradle.LocalDateAdapter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

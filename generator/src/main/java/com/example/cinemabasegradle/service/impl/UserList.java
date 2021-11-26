@@ -1,6 +1,7 @@
 package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.model.User;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +17,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class UserList {
 
-    @XmlElement(name="users")
+    @XmlElement(name = "users")
     private List<User> userList;
 }
