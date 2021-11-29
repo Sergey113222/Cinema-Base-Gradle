@@ -6,17 +6,22 @@ import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.service.XmlService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
+@Slf4j
 @Qualifier("xStream")
 public class XStreamConverter implements XmlService {
 
@@ -28,10 +33,10 @@ public class XStreamConverter implements XmlService {
         xstream.alias("user", User.class);
         xstream.alias("profile", Profile.class);
 
-        try {
-            xstream.toXML(userList, new FileWriter(filePath));
+        try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8)) {
+            xstream.toXML(userList, fileWriter);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Cannot write file");
         }
     }
 
@@ -42,13 +47,15 @@ public class XStreamConverter implements XmlService {
         xstream.alias("user", User.class);
         xstream.alias("profile", Profile.class);
 
-        InputStream in = null;
-        try {
-            in = new FileInputStream(filePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        return (List<User>) xstream.fromXML(in);
+        List<User> userList = null;
+        try (InputStream in = new FileInputStream(filePath)) {
+            userList = (List<User>) xstream.fromXML(in);
+        } catch (FileNotFoundException e) {
+            log.error("Cannot read file");
+        } catch (IOException e) {
+            log.error("Fail to close stream");
+        }
+        return userList;
     }
 }

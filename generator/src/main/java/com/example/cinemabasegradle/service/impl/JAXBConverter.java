@@ -2,6 +2,7 @@ package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.service.XmlService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +11,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 @Service
+@Slf4j
 @Qualifier("jaxb")
 public class JAXBConverter implements XmlService {
 
@@ -23,7 +26,7 @@ public class JAXBConverter implements XmlService {
             jaxbContext = JAXBContext.newInstance(UserList.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             UserList users = new UserList();
-            users.setUserList(userList);
+            users.setUsers(userList);
 
             // output pretty printed
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -31,7 +34,7 @@ public class JAXBConverter implements XmlService {
             // output to a xml file
             jaxbMarshaller.marshal(users, new File(filePath));
         } catch (JAXBException e) {
-            e.printStackTrace();
+            log.error("Cannot write file");
         }
     }
 
@@ -46,11 +49,11 @@ public class JAXBConverter implements XmlService {
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             UserList userList = (UserList) jaxbUnmarshaller.unmarshal(file);
 
-            return userList.getUserList();
+            return userList.getUsers();
 
         } catch (JAXBException e) {
-            e.printStackTrace();
+            log.error("Cannot read file");
         }
-        return null;
+        return Collections.emptyList();
     }
 }

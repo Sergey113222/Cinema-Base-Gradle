@@ -21,5 +21,5 @@ import java.util.List;
 public class UserList {
 
     @XmlElement(name = "users")
-    private List<User> userList;
+    private List<User> users;
 }
