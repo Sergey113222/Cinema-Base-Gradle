@@ -22,7 +22,7 @@ public class XmlController {
     private final XmlService xmlService;
     private final UserRepositoryJdbcImpl userRepositoryJdbc;
 
-    public XmlController(@Qualifier("xStream") XmlService xmlService, UserRepositoryJdbcImpl userRepositoryJdbc) {
+    public XmlController(@Qualifier("jaxb") XmlService xmlService, UserRepositoryJdbcImpl userRepositoryJdbc) {
         this.xmlService = xmlService;
         this.userRepositoryJdbc = userRepositoryJdbc;
     }
