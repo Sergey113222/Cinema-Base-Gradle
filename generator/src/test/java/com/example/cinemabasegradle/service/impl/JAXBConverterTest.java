@@ -3,11 +3,9 @@ package com.example.cinemabasegradle.service.impl;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,10 +13,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JAXBConverterTest {
 
-    private static final String FILE_PATH = "user3.xml";
+    private static final String FILE_PATH_READ = "src/test/resources/user3.xml";
+    private static final String FILE_PATH_WRITE = "src/test/resources/user4.xml";
     private User user;
     private List<User> userList;
 
@@ -27,7 +25,7 @@ class JAXBConverterTest {
 
         user = User.builder()
                 .id(1L)
-                .username("TestUsername2")
+                .username("TestUsername3")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
                 .role(Role.ROLE_USER)
@@ -46,19 +44,24 @@ class JAXBConverterTest {
     }
 
     @Test
-    @Order(1)
     void marshal() {
         JAXBConverter jaxbConverter = new JAXBConverter();
-        jaxbConverter.marshal(userList, FILE_PATH);
-        File file = new File(FILE_PATH);
+        jaxbConverter.marshal(userList, FILE_PATH_WRITE);
+        File file = new File(FILE_PATH_WRITE);
         assertTrue(file.exists());
     }
 
     @Test
-    @Order(2)
     void unmarshal() {
         JAXBConverter jaxbConverter = new JAXBConverter();
-        List<User> users = jaxbConverter.unmarshal(FILE_PATH);
+        List<User> users = jaxbConverter.unmarshal(FILE_PATH_READ);
         assertTrue(users.stream().count() > 0);
+    }
+
+    @AfterAll
+    public static void clean() {
+        File file = new File(FILE_PATH_WRITE);
+        boolean success = file.delete();
+        assertTrue(success);
     }
 }

@@ -36,7 +36,7 @@ public class XStreamConverter implements XmlService {
         try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8)) {
             xstream.toXML(userList, fileWriter);
         } catch (IOException e) {
-            log.error("Cannot write file");
+            log.error("Cannot write file", e);
         }
     }
 
@@ -52,9 +52,9 @@ public class XStreamConverter implements XmlService {
         try (InputStream in = new FileInputStream(filePath)) {
             userList = (List<User>) xstream.fromXML(in);
         } catch (FileNotFoundException e) {
-            log.error("Cannot read file");
+            log.error("Cannot read file", e);
         } catch (IOException e) {
-            log.error("Fail to close stream");
+            log.error("Fail to close stream", e);
         }
         return userList;
     }

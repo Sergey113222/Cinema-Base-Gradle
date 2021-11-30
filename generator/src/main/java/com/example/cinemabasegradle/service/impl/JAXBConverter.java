@@ -34,7 +34,7 @@ public class JAXBConverter implements XmlService {
             // output to a xml file
             jaxbMarshaller.marshal(users, new File(filePath));
         } catch (JAXBException e) {
-            log.error("Cannot write file");
+            log.error("Cannot write file", e);
         }
     }
 
@@ -52,7 +52,7 @@ public class JAXBConverter implements XmlService {
             return userList.getUsers();
 
         } catch (JAXBException e) {
-            log.error("Cannot read file");
+            log.error("Cannot read file", e);
         }
         return Collections.emptyList();
     }

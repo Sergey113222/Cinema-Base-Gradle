@@ -3,11 +3,9 @@ package com.example.cinemabasegradle.service.impl;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,10 +13,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class XStreamConverterTest {
 
-    private static final String FILE_PATH = "user2.xml";
+    private static final String FILE_PATH_READ = "src/test/resources/user2.xml";
+    private static final String FILE_PATH_WRITE = "src/test/resources/user1.xml";
     private User user;
     private List<User> userList;
 
@@ -46,19 +44,24 @@ class XStreamConverterTest {
     }
 
     @Test
-    @Order(1)
     void marshal() {
         XStreamConverter xStreamConverter = new XStreamConverter();
-        xStreamConverter.marshal(userList, FILE_PATH);
-        File file = new File(FILE_PATH);
+        xStreamConverter.marshal(userList, FILE_PATH_WRITE);
+        File file = new File(FILE_PATH_WRITE);
         assertTrue(file.exists());
     }
 
     @Test
-    @Order(2)
     void unmarshal() {
         XStreamConverter xStreamConverter = new XStreamConverter();
-        List<User> users = xStreamConverter.unmarshal(FILE_PATH);
+        List<User> users = xStreamConverter.unmarshal(FILE_PATH_READ);
         assertTrue(users.stream().count() > 0);
+    }
+
+    @AfterAll
+    public static void clean() {
+        File file = new File(FILE_PATH_WRITE);
+        boolean success = file.delete();
+        assertTrue(success);
     }
 }
