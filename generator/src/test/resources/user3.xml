@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<userList>
+    <users id="1">
+        <username>TestUsername3</username>
+        <password>TestPassword2</password>
+        <email>test2@mail.ru</email>
+        <role>ROLE_USER</role>
+        <active>true</active>
+        <profile>
+            <avatar>xxx</avatar>
+            <firstName>Serega</firstName>
+            <lastName>Ivanov</lastName>
+            <age>20</age>
+            <language>en</language>
+        </profile>
+    </users>
+</userList>

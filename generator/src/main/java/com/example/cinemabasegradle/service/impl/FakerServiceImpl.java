@@ -1,4 +1,4 @@
-package com.example.cinemabasegradle.service;
+package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
-public class FakerService {
+public class FakerServiceImpl {
 
     private static final Integer MIN_CHAR = 8;
     private static final Integer MAX_CHAR = 16;
