@@ -21,6 +21,7 @@ public class UserMovieServiceImpl implements UserMovieService {
     private final UserMovieRepository userMovieRepository;
     private final UserRepository userRepository;
     private final SearchService searchService;
+    private final ProducerRabbitService producerRabbitService;
 
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
@@ -37,6 +38,7 @@ public class UserMovieServiceImpl implements UserMovieService {
         userMovie.setExternalMovieId(movieDto.getExternalMovieId());
 
         UserMovie saveUserMovie = userMovieRepository.save(userMovie);
+        producerRabbitService.produce(movieDto.getTitle(), user.getId());
         return saveUserMovie.getId();
     }
 
