@@ -1,39 +1,26 @@
 package com.example.cinemabasegradle.service.impl;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import liquibase.pro.packaged.S;
+import com.example.cinemabasegradle.dto.RabbitRequestDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProducerRabbitService {
-    private final static String HOST_NAME = "localhost";
-    private final static String QUEUE_NAME = "cinema-base-queue";
+    @Value("${spring.rabbitmq.exchange}")
+    private String exchange;
 
+    @Value("${spring.rabbitmq.routing-key}")
+    private String routingKey;
 
+    private final RabbitTemplate template;
 
-    public void produce(String movieName, Long userId) {
-
-        final ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(HOST_NAME);
-
-        try (final Connection connection = connectionFactory.newConnection();
-             final Channel channel = connection.createChannel()) {
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-
-            final String message = "Film " + movieName + " successfully added to favourite ";
-            channel.basicPublish(" ", QUEUE_NAME, null, message.getBytes("UTF-8"));
-
-        } catch (IOException e) {
-            log.error("Cannot connect ", e);
-        } catch (TimeoutException e) {
-            log.error("Problem with timeout ", e);
-        }
+    public void produce(RabbitRequestDto requestDto) {
+        log.info("sending message to broker" + requestDto);
+        template.convertAndSend(exchange, routingKey, requestDto);
     }
 }
