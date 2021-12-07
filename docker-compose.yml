@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
 
@@ -30,6 +30,19 @@ services:
       - 'SPRING_PROFILES_ACTIVE=docker'
     depends_on:
       - movie-db
+      - movie-rabbitmq
+    networks:
+      - movie-network
+
+  movie-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'movie-rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/data/:/var/lib/movie-rabbitmq
+      - ./rabbitmq/log/:/var/log/movie-rabbitmq
     networks:
       - movie-network
 
@@ -39,3 +52,5 @@ networks:
 
 volumes:
   movie-db: { }
+  movie-rabbitmq: { }
+
