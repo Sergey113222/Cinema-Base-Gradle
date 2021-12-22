@@ -12,11 +12,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -36,6 +39,7 @@ class UserMovieServiceImplTest {
     private final UserMovie userMovie;
     private final User user;
     private final MovieDto movieDto;
+    private List<UserMovie> userMovieList;
 
     {
         user = new User();
@@ -58,6 +62,11 @@ class UserMovieServiceImplTest {
         movieDto.setExternalMovieId(2569L);
         movieDto.setPersonalRating(9);
         movieDto.setPersonalNotes("it is my favourite movie!!!!");
+    }
+
+    {
+        userMovieList = new ArrayList<>();
+        userMovieList.add(userMovie);
     }
 
 
@@ -146,5 +155,29 @@ class UserMovieServiceImplTest {
         assertThrows(
                 ResourceNotFoundException.class,
                 () -> userMovieService.updateFavouriteMovie(movieDto, nonExistingId));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when userId doesn't exist.")
+    void throwExceptionWhenFindAllByUserId() {
+        final long nonExistingId = 12902450235L;
+        doReturn(Optional.empty()).when(userMovieRepository).findAllByUserId(nonExistingId);
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> userMovieService.fetchAllByUserId(nonExistingId));
+    }
+
+    @Test
+    void fetchAllByUserId() {
+        when(userMovieRepository.findAllByUserId(any())).thenReturn(Optional.of(userMovieList));
+        when(searchService.searchMoviesById(any())).thenReturn(movieDto);
+        List<MovieDto> movieDtoList = userMovieService.fetchAllByUserId(userMovie.getId());
+        assertTrue(movieDtoList.size() > 0);
+    }
+
+    @Test
+    void countFavouriteByUserId() {
+        when(userMovieRepository.countUserMovieByUserId(any())).thenReturn(1L);
+        assertEquals(1, userMovieRepository.countUserMovieByUserId(10L));
     }
 }

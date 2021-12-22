@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -45,6 +48,7 @@ class UserMovieControllerTest {
     private ArgumentCaptor<Long> captorId;
 
     private MovieDto movieDto;
+    private List<MovieDto> movieDtoList;
 
     @BeforeEach
     void setUp() {
@@ -58,6 +62,8 @@ class UserMovieControllerTest {
         movieDto.setPersonalRating(8);
         movieDto.setPersonalNotes("it is my favourite movie!!!!");
 
+        movieDtoList = new ArrayList<>();
+        movieDtoList.add(movieDto);
     }
 
     @Test
@@ -114,5 +120,31 @@ class UserMovieControllerTest {
 
         verify(userMovieService).deleteFavouriteMovie(captorId.capture());
         assertEquals(1L, captorId.getValue());
+    }
+
+    @Test
+    void findAllByUserId() throws Exception {
+        when(userMovieService.fetchAllByUserId(any())).thenReturn(movieDtoList);
+
+        mockMvc.perform(get("/favourite/all/" + 1L))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userMovieService).fetchAllByUserId(any());
+    }
+
+    @Test
+    void countAllByUserId() throws Exception {
+        when(userMovieService.countFavouriteByUserId(any())).thenReturn(10L);
+
+        mockMvc.perform(get("/favourite/count/" + 1L))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userMovieService).countFavouriteByUserId(any());
     }
 }

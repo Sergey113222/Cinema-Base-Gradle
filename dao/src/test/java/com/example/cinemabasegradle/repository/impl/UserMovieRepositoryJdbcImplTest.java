@@ -16,11 +16,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("testJdbc")
 @SpringBootTest(classes = EmbeddedTestConfig.class)
@@ -86,5 +88,18 @@ class UserMovieRepositoryJdbcImplTest {
         UserMovie savedUserMovie = userMovieRepository.save(userMovie);
         userMovieRepository.delete(savedUserMovie);
         assertFalse(userMovieRepository.findById(savedUserMovie.getId()).isPresent());
+    }
+
+    @Test
+    void findAllByUserId() {
+        Long userId = userMovieRepository.save(userMovie).getId();
+        List<UserMovie> userMovieList = userMovieRepository.findAllByUserId(userId).get();
+        assertTrue(userMovieList.size() > 0);
+    }
+
+    @Test
+    void countUserMovieByUserId() {
+        Long userId = userMovieRepository.save(userMovie).getId();
+        assertEquals(1, userMovieRepository.countUserMovieByUserId(userId));
     }
 }

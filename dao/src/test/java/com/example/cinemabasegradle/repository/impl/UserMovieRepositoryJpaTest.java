@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -86,5 +87,18 @@ class UserMovieRepositoryJpaTest {
         userMovieId = userMovieRepository.save(userMovie).getId();
         userMovieRepository.delete(userMovie);
         assertEquals(Optional.empty(), userMovieRepository.findById(userMovie.getId()));
+    }
+
+    @Test
+    void findAllByUserId() {
+        Long userId = userMovieRepository.save(userMovie).getId();
+        List<UserMovie> userMovieList = userMovieRepository.findAllByUserId(userId).get();
+        assertTrue(userMovieList.size() > 0);
+    }
+
+    @Test
+    void countUserMovieByUserId() {
+        Long userId = userMovieRepository.save(userMovie).getId();
+        assertEquals(1, userMovieRepository.countUserMovieByUserId(userId));
     }
 }
