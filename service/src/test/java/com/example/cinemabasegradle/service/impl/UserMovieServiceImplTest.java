@@ -31,6 +31,7 @@ class UserMovieServiceImplTest {
     private UserRepository userRepository;
     private SearchService searchService;
     private UserMovieServiceImpl userMovieService;
+    private ProducerRabbitService producerRabbitService;
 
     private final UserMovie userMovie;
     private final User user;
@@ -65,7 +66,9 @@ class UserMovieServiceImplTest {
         userRepository = mock(UserRepository.class);
         userMovieRepository = mock(UserMovieRepository.class);
         searchService = mock(SearchService.class);
-        userMovieService = new UserMovieServiceImpl(userMovieRepository, userRepository, searchService);
+        producerRabbitService = mock(ProducerRabbitService.class);
+        userMovieService = new UserMovieServiceImpl(userMovieRepository, userRepository,
+                searchService, producerRabbitService);
     }
 
     @Test
