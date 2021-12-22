@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@Profile({"jdbc", "testJdbc"})
+@Profile({"jdbc", "testJdbc", "docker"})
 @Repository
 @RequiredArgsConstructor
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})

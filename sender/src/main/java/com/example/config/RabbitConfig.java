@@ -1,13 +1,12 @@
-package com.example.cinemabasegradle.config;
+package com.example.config;
 
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -15,14 +14,10 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class AppConfig {
-
-    private static final Integer TIMEOUT = 5000;
+@EnableRabbit
+public class RabbitConfig {
 
     @Value("${spring.rabbitmq.queue}")
     private String queue;
@@ -32,24 +27,6 @@ public class AppConfig {
 
     @Value("${spring.rabbitmq.routing-key}")
     private String routingKey;
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate(getClientHttpRequestFactory());
-    }
-
-    private ClientHttpRequestFactory getClientHttpRequestFactory() {
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(TIMEOUT)
-                .setConnectionRequestTimeout(TIMEOUT)
-                .setSocketTimeout(TIMEOUT)
-                .build();
-        CloseableHttpClient client = HttpClientBuilder
-                .create()
-                .setDefaultRequestConfig(config)
-                .build();
-        return new HttpComponentsClientHttpRequestFactory(client);
-    }
 
     @Bean
     Queue queue() {

@@ -1,17 +1,18 @@
 package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.dto.MovieDto;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
-import org.springframework.stereotype.Service;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.SearchService;
 import com.example.cinemabasegradle.service.UserMovieService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserMovieServiceImpl implements UserMovieService {
     private final UserMovieRepository userMovieRepository;
     private final UserRepository userRepository;
     private final SearchService searchService;
+    private final ProducerRabbitService producerRabbitService;
 
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
@@ -40,6 +42,12 @@ public class UserMovieServiceImpl implements UserMovieService {
         userMovie.setExternalMovieId(movieDto.getExternalMovieId());
 
         UserMovie saveUserMovie = userMovieRepository.save(userMovie);
+
+        RabbitRequestDto requestDto = new RabbitRequestDto();
+        requestDto.setEmail(user.getEmail());
+        requestDto.setTitle(movieDto.getTitle());
+
+        producerRabbitService.produce(requestDto);
         return saveUserMovie.getId();
     }
 
