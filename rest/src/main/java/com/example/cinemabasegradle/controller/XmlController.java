@@ -1,7 +1,7 @@
 package com.example.cinemabasegradle.controller;
 
 import com.example.cinemabasegradle.model.User;
-import com.example.cinemabasegradle.repository.impl.UserRepositoryJdbcImpl;
+import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.XmlService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,16 +20,16 @@ public class XmlController {
 
 
     private final XmlService xmlService;
-    private final UserRepositoryJdbcImpl userRepositoryJdbc;
+    private final UserRepository userRepository;
 
-    public XmlController(@Qualifier("jaxb") XmlService xmlService, UserRepositoryJdbcImpl userRepositoryJdbc) {
+    public XmlController(@Qualifier("jaxb") XmlService xmlService, UserRepository userRepository) {
         this.xmlService = xmlService;
-        this.userRepositoryJdbc = userRepositoryJdbc;
+        this.userRepository = userRepository;
     }
 
     @PostMapping(value = "/marshalXml")
     public void marshalXml() {
-        List<User> userList = userRepositoryJdbc.findAll();
+        List<User> userList = userRepository.findAll();
         xmlService.marshal(userList, FILE_PATH);
     }
 

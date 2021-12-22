@@ -15,6 +15,7 @@ import com.example.cinemabasegradle.repository.UserMovieRepository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +43,10 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     private String saveUserMovieQuery;
     @Value("${sql.user_movie.update}")
     private String updateUserMovieQuery;
+    @Value("${sql.user_movie.find_all_favourite_by_user_id}")
+    private String findAllByUserIdQuery;
+    @Value("${sql.user_movie.count_all_favourite_by_user_id}")
+    private String countAllByUserIdQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final UserMovieRowMapper userMovieRowMapper;
@@ -80,5 +85,20 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue(ID, userMovie.getId());
         namedParameterJdbcTemplate.update(deleteQuery, paramSource);
+    }
+
+    @Override
+    public Optional<List<UserMovie>> findAllByUserId(Long userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(USER_ID, userId);
+        List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllByUserIdQuery, params, userMovieRowMapper);
+        return Optional.ofNullable(userMovies);
+    }
+
+    @Override
+    public Long countUserMovieByUserId(Long userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(USER_ID, userId);
+        return namedParameterJdbcTemplate.queryForObject(countAllByUserIdQuery, params, Long.class);
     }
 }

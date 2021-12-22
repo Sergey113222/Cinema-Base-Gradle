@@ -13,6 +13,9 @@ import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.SearchService;
 import com.example.cinemabasegradle.service.UserMovieService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @SuppressFBWarnings("EI_EXPOSE_REP2")
@@ -68,5 +71,24 @@ public class UserMovieServiceImpl implements UserMovieService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         userMovieRepository.delete(userMovie);
+    }
+
+    @Override
+    public List<MovieDto> fetchAllByUserId(Long userId) {
+        List<UserMovie> userMovies = userMovieRepository.findAllByUserId(userId).orElseThrow(() ->
+                new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
+        List<MovieDto> movieDtoList = new ArrayList<>();
+        for (UserMovie userMovie: userMovies) {
+            MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
+            movieDto.setPersonalRating(userMovie.getRating());
+            movieDto.setPersonalNotes(userMovie.getNotes());
+            movieDtoList.add(movieDto);
+        }
+        return movieDtoList;
+    }
+
+    @Override
+    public Long countFavouriteByUserId(Long userId) {
+        return userMovieRepository.countUserMovieByUserId(userId);
     }
 }

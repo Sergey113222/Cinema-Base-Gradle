@@ -18,6 +18,7 @@ import com.example.cinemabasegradle.service.UserMovieService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,5 +51,16 @@ public class UserMovieController {
     public ResponseEntity<Void> deleteFavouriteMovie(@PathVariable("id") @Min(1) Long id) {
         userMovieService.deleteFavouriteMovie(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<MovieDto>> findAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
+        List<MovieDto> movieDtoList = userMovieService.fetchAllByUserId(userId);
+        return ResponseEntity.ok().body(movieDtoList);
+    }
+
+    @GetMapping("/count/{userId}")
+    public ResponseEntity<Long> countAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
+        return ResponseEntity.ok().body(userMovieService.countFavouriteByUserId(userId));
     }
 }
