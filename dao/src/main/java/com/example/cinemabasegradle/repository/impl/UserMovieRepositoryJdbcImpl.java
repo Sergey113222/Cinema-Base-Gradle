@@ -1,17 +1,19 @@
 package com.example.cinemabasegradle.repository.impl;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.RequiredArgsConstructor;
 import com.example.cinemabasegradle.mapper.UserMovieRowMapper;
 import com.example.cinemabasegradle.model.UserMovie;
+import com.example.cinemabasegradle.repository.UserMovieRepository;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import com.example.cinemabasegradle.repository.UserMovieRepository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -100,5 +102,20 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         Map<String, Object> params = new HashMap<>();
         params.put(USER_ID, userId);
         return namedParameterJdbcTemplate.queryForObject(countAllByUserIdQuery, params, Long.class);
+    }
+
+    @Override
+    public Page<UserMovie> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<UserMovie> findByRatingAfterAndCreatedAfter(Integer rating, LocalDate created, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<UserMovie> findByNotesContainingAndViewedTrue(String search, Pageable pageable) {
+        return null;
     }
 }

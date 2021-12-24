@@ -12,8 +12,11 @@ import com.example.cinemabasegradle.service.SearchService;
 import com.example.cinemabasegradle.service.UserMovieService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +89,7 @@ public class UserMovieServiceImpl implements UserMovieService {
         List<UserMovie> userMovies = userMovieRepository.findAllByUserId(userId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
         List<MovieDto> movieDtoList = new ArrayList<>();
-        for (UserMovie userMovie: userMovies) {
+        for (UserMovie userMovie : userMovies) {
             MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
             movieDto.setPersonalRating(userMovie.getRating());
             movieDto.setPersonalNotes(userMovie.getNotes());
@@ -98,5 +101,35 @@ public class UserMovieServiceImpl implements UserMovieService {
     @Override
     public Long countFavouriteByUserId(Long userId) {
         return userMovieRepository.countUserMovieByUserId(userId);
+    }
+
+    @Override
+    public List<MovieDto> sortByColumnNameAsc(Pageable pageable) {
+        Page<UserMovie> requestPage = userMovieRepository.findAll(pageable);
+        return toMovieDtoList(requestPage);
+    }
+
+    @Override
+    public List<MovieDto> filterByRatingAfterAndCreatedAfter(Integer rating, LocalDate created, Pageable pageable) {
+        Page<UserMovie> requestPage = userMovieRepository.findByRatingAfterAndCreatedAfter(rating, created, pageable);
+        return toMovieDtoList(requestPage);
+    }
+
+    @Override
+    public List<MovieDto> filterByNotesContainingAndViewedTrue(String search, Pageable pageable) {
+        Page<UserMovie> requestPage = userMovieRepository.findByNotesContainingAndViewedTrue(search, pageable);
+        return toMovieDtoList(requestPage);
+    }
+
+    private List<MovieDto> toMovieDtoList(Page<UserMovie> requestPage) {
+        List<MovieDto> movieDtoList = new ArrayList<>();
+        for (UserMovie userMovie : requestPage) {
+            MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
+            movieDto.setPersonalRating(userMovie.getRating());
+            movieDto.setPersonalNotes(userMovie.getNotes());
+            movieDto.setCreated(userMovie.getCreated());
+            movieDtoList.add(movieDto);
+        }
+        return movieDtoList;
     }
 }

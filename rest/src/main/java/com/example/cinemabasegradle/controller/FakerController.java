@@ -5,6 +5,7 @@ import com.example.cinemabasegradle.repository.impl.UserRepositoryJdbcImpl;
 import com.example.cinemabasegradle.service.impl.FakerServiceImpl;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Profile("jdbc")
 @RequiredArgsConstructor
 @RequestMapping(value = "/faker")
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
