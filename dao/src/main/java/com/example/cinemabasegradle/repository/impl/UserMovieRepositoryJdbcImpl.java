@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -36,6 +37,10 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     private static final String CREATED = "created";
     private static final String UPDATED = "updated";
     private static final String EXTERNAL_ID = "externalMovieId";
+    private static final String LIMIT = "limit";
+    private static final String OFFSET = "offset";
+    private static final String SORT_COLUMN = "sortColumn";
+    private static final String SEARCH = "search";
 
     @Value("${sql.user_movie.find_by_id}")
     private String findByIdQuery;
@@ -49,6 +54,14 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     private String findAllByUserIdQuery;
     @Value("${sql.user_movie.count_all_favourite_by_user_id}")
     private String countAllByUserIdQuery;
+    @Value("${sql.user_movie.find_all}")
+    private String findAllQuery;
+    @Value("${sql.user_movie.count_all}")
+    private String countAll;
+    @Value("${sql.user_movie.find_all_filter_by_rating_after_and_created_after}")
+    private String findAllFilterByRatingAfterAndCreatedAfterQuery;
+    @Value("${sql.user_movie.find_all_filter_by_notes_containing_and_viewed_true}")
+    private String findAllFindByNotesContainingAndViewedTrueQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final UserMovieRowMapper userMovieRowMapper;
@@ -106,16 +119,37 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
 
     @Override
     public Page<UserMovie> findAll(Pageable pageable) {
-        return null;
+        Map<String, Object> params = new HashMap<>();
+        params.put(LIMIT, pageable.getPageSize());
+        params.put(OFFSET, pageable.getOffset());
+        params.put(SORT_COLUMN, pageable.getSort());
+        List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllQuery, params, userMovieRowMapper);
+        long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+        return new PageImpl<>(userMovies, pageable, total);
     }
 
     @Override
     public Page<UserMovie> findByRatingAfterAndCreatedAfter(Integer rating, LocalDate created, Pageable pageable) {
-        return null;
+        Map<String, Object> params = new HashMap<>();
+        params.put(LIMIT, pageable.getPageSize());
+        params.put(OFFSET, pageable.getOffset());
+        params.put(RATING, rating);
+        params.put(CREATED, created);
+        List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllFilterByRatingAfterAndCreatedAfterQuery,
+                params, userMovieRowMapper);
+        long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+        return new PageImpl<>(userMovies, pageable, total);
     }
 
     @Override
     public Page<UserMovie> findByNotesContainingAndViewedTrue(String search, Pageable pageable) {
-        return null;
+        Map<String, Object> params = new HashMap<>();
+        params.put(LIMIT, pageable.getPageSize());
+        params.put(OFFSET, pageable.getOffset());
+        params.put(SEARCH, "%" + search + "%");
+        List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllFindByNotesContainingAndViewedTrueQuery,
+                params, userMovieRowMapper);
+        long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+        return new PageImpl<>(userMovies, pageable, total);
     }
 }
