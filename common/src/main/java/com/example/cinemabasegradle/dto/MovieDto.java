@@ -23,6 +23,9 @@ public class MovieDto {
     @NotNull(message = "Name cannot be null")
     @JsonProperty("id")
     private Long externalMovieId;
+    private Long userMovieId;
+    @JsonProperty("backdrop_path")
+    private String backdropPath;
     private String title;
     @JsonProperty("poster_path")
     private String posterPath;
@@ -41,6 +44,7 @@ public class MovieDto {
     @Pattern(regexp = ".{2,128}", message = "Notes should be between [2-128]")
     @JsonProperty("personal_notes")
     private String personalNotes;
+    private Boolean viewed;
     private LocalDate created;
 }
 

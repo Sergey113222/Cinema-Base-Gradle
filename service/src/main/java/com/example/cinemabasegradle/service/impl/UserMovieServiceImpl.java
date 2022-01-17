@@ -59,6 +59,7 @@ public class UserMovieServiceImpl implements UserMovieService {
         UserMovie userMovie = userMovieRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, id)));
         MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
+        movieDto.setUserMovieId(userMovie.getId());
         movieDto.setPersonalRating(userMovie.getRating());
         movieDto.setPersonalNotes(userMovie.getNotes());
         return movieDto;
@@ -91,6 +92,7 @@ public class UserMovieServiceImpl implements UserMovieService {
         List<MovieDto> movieDtoList = new ArrayList<>();
         for (UserMovie userMovie : userMovies) {
             MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
+            movieDto.setUserMovieId(userMovie.getId());
             movieDto.setPersonalRating(userMovie.getRating());
             movieDto.setPersonalNotes(userMovie.getNotes());
             movieDtoList.add(movieDto);

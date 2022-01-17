@@ -124,7 +124,8 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         params.put(OFFSET, pageable.getOffset());
         params.put(SORT_COLUMN, pageable.getSort());
         List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllQuery, params, userMovieRowMapper);
-        long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+
+        Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
         return new PageImpl<>(userMovies, pageable, total);
     }
 
@@ -137,7 +138,8 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         params.put(CREATED, created);
         List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllFilterByRatingAfterAndCreatedAfterQuery,
                 params, userMovieRowMapper);
-        long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+
+        Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
         return new PageImpl<>(userMovies, pageable, total);
     }
 
@@ -149,7 +151,8 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         params.put(SEARCH, "%" + search + "%");
         List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllFindByNotesContainingAndViewedTrueQuery,
                 params, userMovieRowMapper);
-        long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+
+        Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
         return new PageImpl<>(userMovies, pageable, total);
     }
 }

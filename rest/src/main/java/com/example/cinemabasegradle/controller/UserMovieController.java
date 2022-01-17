@@ -69,29 +69,36 @@ public class UserMovieController {
     }
 
     @GetMapping("/sort")
-    public ResponseEntity<List<MovieDto>> sortByColumnNameAsc(@RequestParam(value = "sortColumn") String sortColumn,
-                                                        @RequestParam(value = "page") int page,
-                                                        @RequestParam(value = "size") int size) {
-        List<MovieDto> movieDtoList = userMovieService.sortByColumnNameAsc(PageRequest.of(page, size, Sort.by(sortColumn).ascending()));
+    public ResponseEntity<List<MovieDto>> sortByColumnNameAsc(
+            @RequestParam(value = "sortColumn", defaultValue = "created") String sortColumn,
+            @RequestParam(value = "page", defaultValue = "20") Integer page,
+            @RequestParam(value = "size", defaultValue = "0") Integer size) {
+        List<MovieDto> movieDtoList = userMovieService.sortByColumnNameAsc(PageRequest.of(page, size,
+                Sort.by(sortColumn).ascending()));
         return ResponseEntity.ok().body(movieDtoList);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<MovieDto>> findAllFiltered(@RequestParam(value = "rating") Integer rating,
-                                                          @RequestParam(value = "created") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate created,
-                                                          @RequestParam(value = "page") int page,
-                                                          @RequestParam(value = "size") int size) {
+    public ResponseEntity<List<MovieDto>> findAllFiltered(
+                      @RequestParam(value = "rating", defaultValue = "0") Integer rating,
+                      @RequestParam(value = "created", defaultValue = "20-01-01")
+                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate created,
+                      @RequestParam(value = "page", defaultValue = "20") Integer page,
+                      @RequestParam(value = "size", defaultValue = "0") Integer size) {
 
-        List<MovieDto> movieDtoList = userMovieService.filterByRatingAfterAndCreatedAfter(rating, created, PageRequest.of(page, size));
+        List<MovieDto> movieDtoList = userMovieService.filterByRatingAfterAndCreatedAfter(rating, created,
+                PageRequest.of(page, size));
         return ResponseEntity.ok().body(movieDtoList);
     }
 
     @GetMapping("/filterNew")
-    public ResponseEntity<List<MovieDto>> findAllFilteredNew(@RequestParam(value = "search") String search,
-                                                             @RequestParam(value = "page") int page,
-                                                             @RequestParam(value = "size") int size) {
+    public ResponseEntity<List<MovieDto>> findAllFilteredNew(
+            @RequestParam(value = "search", defaultValue = " ") String search,
+            @RequestParam(value = "page", defaultValue = "20") Integer page,
+            @RequestParam(value = "size", defaultValue = "0") Integer size) {
 
-        List<MovieDto> movieDtoList = userMovieService.filterByNotesContainingAndViewedTrue(search, PageRequest.of(page, size));
+        List<MovieDto> movieDtoList = userMovieService.filterByNotesContainingAndViewedTrue(search,
+                PageRequest.of(page, size));
         return ResponseEntity.ok().body(movieDtoList);
     }
 }

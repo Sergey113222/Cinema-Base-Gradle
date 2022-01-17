@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <link rel="shortcut icon"
+          href="https://e7.pngegg.com/pngimages/766/49/png-clipart-computer-icons-video-cameras-film-video-camera-miscellaneous-television.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <br>
+
+    <form ACTION="#" th:action="@{'/favourite/edit/{id}'(id=${movie.getUserMovieId()})}" th:object="${movie}"
+          method="POST">
+        <div class="input-group input-group-sm mb-3">
+
+            <span class="input-group-text" id="inputGroup-sizing-default">Personal rating</span>
+            <input type="number" th:value="${movie.getPersonalRating()}" th:field="*{personalRating}"
+                   class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <br>
+
+        <input type="hidden" th:field="*{externalMovieId}" th:value="${id}"/>
+
+        <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Personal notes</span>
+            <input type="text" th:value="${movie.getPersonalNotes()}" th:field="*{personalNotes}" class="form-control"
+                   aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-sm" id="notes">
+        </div>
+        <br>
+        <div class="checkbox">
+            <label><input type="checkbox" value="">Viewed</label>
+        </div>
+        <br>
+
+        <button type="submit" id="submitButton">Edit</button>
+    </form>
+
+
+</div>
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-muted">© 2022 Sergey Gritsuk</p>
+
+    <a href="/"
+       class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32">
+            <use xlink:href="#bootstrap"></use>
+        </svg>
+    </a>
+
+    <ul class="nav col-md-4 justify-content-end">
+        <li class="nav-item"><a href="favourite" class="nav-link px-2 text-muted">Favourite</a></li>
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+</footer>
+</body>
+</html>

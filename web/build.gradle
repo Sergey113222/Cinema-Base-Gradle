@@ -1,0 +1,24 @@
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+ext{
+    thymeleafVersion = '2.6.2'
+    thymeleafDialectVersion = '2.4.1'
+    bootstrapVersion = '3.3.7'
+    httpClientVersion = '4.5.13'
+}
+
+dependencies {
+    implementation project(path: ':common', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf:${thymeleafVersion}"
+    implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:${thymeleafDialectVersion}"
+    implementation "org.webjars:bootstrap:${bootstrapVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+
+}
+
+test {
+    useJUnitPlatform()
+}
