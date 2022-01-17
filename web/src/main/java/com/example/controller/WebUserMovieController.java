@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.service.WebUserMovieService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class WebUserMovieController {
 
     private final WebUserMovieService webUserMovieService;
@@ -26,7 +28,7 @@ public class WebUserMovieController {
     public String viewAddMoviePage(Model model, @PathVariable Long id) {
         MovieDto movie = new MovieDto();
         movie.setExternalMovieId(id);
-        model.addAttribute("movie",movie);
+        model.addAttribute("movie", movie);
         return "add";
     }
 

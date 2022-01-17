@@ -126,6 +126,7 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllQuery, params, userMovieRowMapper);
 
         Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+        assert total != null;
         return new PageImpl<>(userMovies, pageable, total);
     }
 
@@ -140,6 +141,7 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
                 params, userMovieRowMapper);
 
         Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+        assert total != null;
         return new PageImpl<>(userMovies, pageable, total);
     }
 
@@ -153,6 +155,7 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
                 params, userMovieRowMapper);
 
         Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
+        assert total != null;
         return new PageImpl<>(userMovies, pageable, total);
     }
 }

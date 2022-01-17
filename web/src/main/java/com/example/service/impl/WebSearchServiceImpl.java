@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.service.WebSearchService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class WebSearchServiceImpl implements WebSearchService {
 
     private final RestTemplate restTemplate;
@@ -23,6 +25,9 @@ public class WebSearchServiceImpl implements WebSearchService {
 
     @Value("${cinema-base.host}")
     private String host;
+
+    @Value("${cinema-base.port}")
+    private Integer port;
 
     @Value("${cinema-base.path-search-movie-popular}")
     private String searchMoviePopular;
@@ -36,6 +41,7 @@ public class WebSearchServiceImpl implements WebSearchService {
     private List<MovieDto> getMoviesListFromResource(URI uri) {
 
         MovieDto[] request = restTemplate.getForObject(uri, MovieDto[].class);
+        assert request != null;
         return Arrays.asList(request);
     }
 
@@ -43,7 +49,7 @@ public class WebSearchServiceImpl implements WebSearchService {
         return UriComponentsBuilder.newInstance()
                 .scheme(scheme)
                 .host(host)
-                .port(8080)
+                .port(port)
                 .path(path);
     }
 }

@@ -43,6 +43,16 @@ services:
     environment:
       - 'SPRING_PROFILES_ACTIVE=docker_sender'
 
+  movie-frontend:
+    build:
+      context: .\
+      dockerfile: Dockerfile-frontend
+    image: 'movie-frontend:latest'
+    container_name: movie-frontend
+    restart: unless-stopped
+    ports:
+      - '8585:8585'
+
   movie-rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'movie-rabbitmq'

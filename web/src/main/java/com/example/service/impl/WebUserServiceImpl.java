@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.service.WebUserService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class WebUserServiceImpl implements WebUserService {
 
     private final RestTemplate restTemplate;
@@ -24,6 +26,9 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Value("${cinema-base.host}")
     private String host;
+
+    @Value("${cinema-base.port}")
+    private Integer port;
 
     @Value("${cinema-base.user.all}")
     private String allUsers;
@@ -36,6 +41,7 @@ public class WebUserServiceImpl implements WebUserService {
 
         URI uri = createURI(allUsers).build().toUri();
         UserDto[] request = restTemplate.getForObject(uri, UserDto[].class);
+        assert request != null;
         return Arrays.asList(request);
     }
 
@@ -49,7 +55,7 @@ public class WebUserServiceImpl implements WebUserService {
         return UriComponentsBuilder.newInstance()
                 .scheme(scheme)
                 .host(host)
-                .port(8080)
+                .port(port)
                 .path(path);
     }
 }

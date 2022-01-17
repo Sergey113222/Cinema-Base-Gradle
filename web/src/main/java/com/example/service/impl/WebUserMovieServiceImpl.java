@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.service.WebUserMovieService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class WebUserMovieServiceImpl implements WebUserMovieService {
 
     private static final String QUERY = "userMovieId";
@@ -26,6 +28,9 @@ public class WebUserMovieServiceImpl implements WebUserMovieService {
 
     @Value("${cinema-base.host}")
     private String host;
+
+    @Value("${cinema-base.port}")
+    private Integer port;
 
     @Value("${cinema-base.favourite}")
     private String favourite;
@@ -55,21 +60,21 @@ public class WebUserMovieServiceImpl implements WebUserMovieService {
     public List<MovieDto> fetchAllByUserId(@PathVariable("user_id") Long id) {
         URI uri = createURI(favouriteAll + id).build().toUri();
         MovieDto[] request = restTemplate.getForObject(uri, MovieDto[].class);
+        assert request != null;
         return Arrays.asList(request);
     }
 
     @Override
     public MovieDto fetchFavouriteMovieByUserId(@PathVariable("user_id") Long id) {
         URI uri = createURI(favourite + id).build().toUri();
-        MovieDto movieDto = restTemplate.getForObject(uri, MovieDto.class);
-        return movieDto;
+        return restTemplate.getForObject(uri, MovieDto.class);
     }
 
     private UriComponentsBuilder createURI(String path) {
         return UriComponentsBuilder.newInstance()
                 .scheme(scheme)
                 .host(host)
-                .port(8080)
+                .port(port)
                 .path(path);
     }
 }
