@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,15 +43,15 @@ class UserMovieRepositoryJdbcImplTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .username("TestUserName")
-                .password("TestPassword")
-                .email("testEmail@mail.ru")
+                .username("TestUserName1")
+                .password("TestPassword1")
+                .email("testEmail1@mail.ru")
                 .role(Role.ROLE_USER)
                 .active(true)
                 .profile(Profile.builder()
-                        .avatar("xxx")
-                        .firstName("Ivan")
-                        .lastName("Ivanov")
+                        .avatar("xxx1")
+                        .firstName("Ivan1")
+                        .lastName("Ivanov1")
                         .age(20)
                         .language("en")
                         .build())
@@ -65,6 +67,7 @@ class UserMovieRepositoryJdbcImplTest {
                 .notes("This is the best film !!!")
                 .rating(8)
                 .user(savedUser)
+                .viewed(true)
                 .created(LocalDate.now())
                 .build();
 
@@ -101,5 +104,36 @@ class UserMovieRepositoryJdbcImplTest {
     void countUserMovieByUserId() {
         Long userId = userMovieRepository.save(userMovie).getId();
         assertEquals(1, userMovieRepository.countUserMovieByUserId(userId));
+    }
+
+    @Test
+    void findByRatingAfterAndCreatedAfter() {
+        userMovieRepository.save(userMovie);
+        userMovie.setId(null);
+        userMovieRepository.save(userMovie);
+        userMovie.setRating(1);
+        userMovie.setId(null);
+        userMovieRepository.save(userMovie);
+
+        Page<UserMovie> pageAll = userMovieRepository.findByRatingAfterAndCreatedAfter(1,
+                LocalDate.of(2000, 1, 1), PageRequest.of(0, 3));
+        List<UserMovie> userMovieList = pageAll.getContent();
+        assertEquals(2, userMovieList.size());
+    }
+
+    @Test
+    void findByNotesContainingAndViewedTrue() {
+        userMovieRepository.save(userMovie);
+        userMovie.setId(null);
+        userMovie.setViewed(false);
+        userMovieRepository.save(userMovie);
+        userMovie.setId(null);
+        userMovie.setViewed(true);
+        userMovie.setNotes("This is the worst film !!!");
+        userMovieRepository.save(userMovie);
+
+        Page<UserMovie> pageAll = userMovieRepository.findByNotesContainingAndViewedTrue("best", PageRequest.of(0, 3));
+        List<UserMovie> userMovieList = pageAll.getContent();
+        assertEquals(1, userMovieList.size());
     }
 }

@@ -39,9 +39,8 @@ public class UserMovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieDto> findFavouriteMovieById(@PathVariable("id") @Min(1) Long id) {
-        MovieDto movieDto = userMovieService.fetchFavouriteMovieById(id);
-        return ResponseEntity.ok().body(movieDto);
+    public MovieDto findFavouriteMovieById(@PathVariable("id") @Min(1) Long id) {
+        return userMovieService.fetchFavouriteMovieById(id);
     }
 
     @PutMapping
@@ -58,47 +57,43 @@ public class UserMovieController {
     }
 
     @GetMapping("/all/{userId}")
-    public ResponseEntity<List<MovieDto>> findAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
-        List<MovieDto> movieDtoList = userMovieService.fetchAllByUserId(userId);
-        return ResponseEntity.ok().body(movieDtoList);
+    public List<MovieDto> findAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
+        return userMovieService.fetchAllByUserId(userId);
     }
 
     @GetMapping("/count/{userId}")
-    public ResponseEntity<Long> countAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
-        return ResponseEntity.ok().body(userMovieService.countFavouriteByUserId(userId));
+    public Long countAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
+        return userMovieService.countFavouriteByUserId(userId);
     }
 
     @GetMapping("/sort")
-    public ResponseEntity<List<MovieDto>> sortByColumnNameAsc(
+    public List<MovieDto> sortByColumnNameAsc(
             @RequestParam(value = "sortColumn", defaultValue = "created") String sortColumn,
             @RequestParam(value = "page", defaultValue = "20") Integer page,
             @RequestParam(value = "size", defaultValue = "0") Integer size) {
-        List<MovieDto> movieDtoList = userMovieService.sortByColumnNameAsc(PageRequest.of(page, size,
+        return userMovieService.sortByColumnNameAsc(PageRequest.of(page, size,
                 Sort.by(sortColumn).ascending()));
-        return ResponseEntity.ok().body(movieDtoList);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<MovieDto>> findAllFiltered(
-                      @RequestParam(value = "rating", defaultValue = "0") Integer rating,
-                      @RequestParam(value = "created", defaultValue = "20-01-01")
-                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate created,
-                      @RequestParam(value = "page", defaultValue = "20") Integer page,
-                      @RequestParam(value = "size", defaultValue = "0") Integer size) {
+    public List<MovieDto> findAllFiltered(
+            @RequestParam(value = "rating", defaultValue = "0") Integer rating,
+            @RequestParam(value = "created", defaultValue = "20-01-01")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate created,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "20") Integer size) {
 
-        List<MovieDto> movieDtoList = userMovieService.filterByRatingAfterAndCreatedAfter(rating, created,
+        return userMovieService.filterByRatingAfterAndCreatedAfter(rating, created,
                 PageRequest.of(page, size));
-        return ResponseEntity.ok().body(movieDtoList);
     }
 
     @GetMapping("/filterNew")
-    public ResponseEntity<List<MovieDto>> findAllFilteredNew(
+    public List<MovieDto> findAllFilteredNew(
             @RequestParam(value = "search", defaultValue = " ") String search,
-            @RequestParam(value = "page", defaultValue = "20") Integer page,
-            @RequestParam(value = "size", defaultValue = "0") Integer size) {
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "20") Integer size) {
 
-        List<MovieDto> movieDtoList = userMovieService.filterByNotesContainingAndViewedTrue(search,
+        return userMovieService.filterByNotesContainingAndViewedTrue(search,
                 PageRequest.of(page, size));
-        return ResponseEntity.ok().body(movieDtoList);
     }
 }

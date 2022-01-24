@@ -51,7 +51,6 @@ class UserRepositoryJdbcImplTest {
 
     @Test
     void findByIdAndActiveTrue() {
-        //user.setEmail("test3@mail.ru");
         User savedUser = userRepository.save(user);
         Optional<User> optionalUser = userRepository.findByIdAndActiveTrue(savedUser.getId());
         assertTrue(optionalUser.isPresent());

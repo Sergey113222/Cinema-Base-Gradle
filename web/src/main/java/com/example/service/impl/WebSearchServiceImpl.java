@@ -5,17 +5,19 @@ import com.example.service.WebSearchService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class WebSearchServiceImpl implements WebSearchService {
 
     private final RestTemplate restTemplate;
@@ -32,17 +34,16 @@ public class WebSearchServiceImpl implements WebSearchService {
     @Value("${cinema-base.path-search-movie-popular}")
     private String searchMoviePopular;
 
-    @Override
-    public List<MovieDto> searchMoviesPopular() {
+    public List<MovieDto> getMovieListPopular() {
         URI uri = createURI(searchMoviePopular).build().toUri();
         return getMoviesListFromResource(uri);
     }
 
     private List<MovieDto> getMoviesListFromResource(URI uri) {
-
-        MovieDto[] request = restTemplate.getForObject(uri, MovieDto[].class);
-        assert request != null;
-        return Arrays.asList(request);
+        ResponseEntity<List<MovieDto>> request = restTemplate
+                .exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+                });
+        return request.getBody();
     }
 
     private UriComponentsBuilder createURI(String path) {

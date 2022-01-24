@@ -10,8 +10,13 @@ import com.example.cinemabasegradle.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Matchers.any;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -34,12 +40,12 @@ class UserMovieServiceImplTest {
     private UserRepository userRepository;
     private SearchService searchService;
     private UserMovieServiceImpl userMovieService;
-    private ProducerRabbitService producerRabbitService;
 
     private final UserMovie userMovie;
     private final User user;
     private final MovieDto movieDto;
-    private List<UserMovie> userMovieList;
+    private final List<UserMovie> userMovieList;
+    private final PageImpl userMoviePage;
 
     {
         user = new User();
@@ -69,20 +75,24 @@ class UserMovieServiceImplTest {
         userMovieList.add(userMovie);
     }
 
+    {
+        userMoviePage = new PageImpl(userMovieList);
+    }
+
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
         userMovieRepository = mock(UserMovieRepository.class);
         searchService = mock(SearchService.class);
-        producerRabbitService = mock(ProducerRabbitService.class);
+        ProducerRabbitService producerRabbitService = mock(ProducerRabbitService.class);
         userMovieService = new UserMovieServiceImpl(userMovieRepository, userRepository,
                 searchService, producerRabbitService);
     }
 
     @Test
     void addToFavouriteMovies() {
-        when(userRepository.findByIdAndActiveTrue(any())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findByIdAndActiveTrue(any())).thenReturn(Optional.of(user));
         when(userMovieRepository.save(any())).thenReturn(userMovie);
         userMovieService.addToFavouriteMovies(movieDto);
         verify(userMovieRepository).save(any());
@@ -179,5 +189,45 @@ class UserMovieServiceImplTest {
     void countFavouriteByUserId() {
         when(userMovieRepository.countUserMovieByUserId(any())).thenReturn(1L);
         assertEquals(1, userMovieRepository.countUserMovieByUserId(10L));
+    }
+
+    @Test
+    void sortByColumnNameAsc() {
+
+        when(userMovieRepository.findAll(any())).thenReturn(userMoviePage);
+        when(searchService.searchMoviesById(any())).thenReturn(movieDto);
+
+        List<MovieDto> movieDtoList = userMovieService.sortByColumnNameAsc(PageRequest.
+                of(0, 20, Sort.by("rating")));
+
+        verify(userMovieRepository).findAll(any());
+        assertTrue(movieDtoList.size() > 0);
+    }
+
+    @Test
+    void filterByRatingAfterAndCreatedAfter() {
+
+        when(userMovieRepository.findByRatingAfterAndCreatedAfter(any(), any(), any())).thenReturn(userMoviePage);
+        when(searchService.searchMoviesById(any())).thenReturn(movieDto);
+
+        Page<UserMovie> page = userMovieRepository.findByRatingAfterAndCreatedAfter(1, LocalDate.of(2020, 1, 1),
+                PageRequest.of(0, 20));
+
+        verify(userMovieRepository).findByRatingAfterAndCreatedAfter(any(), any(), any());
+        assertTrue(page.hasContent());
+    }
+
+    @Test
+    void filterByNotesContainingAndViewedTrue() {
+
+        when(userMovieRepository.findByNotesContainingAndViewedTrue(any(), any())).thenReturn(userMoviePage);
+        when(searchService.searchMoviesById(any())).thenReturn(movieDto);
+
+        Page<UserMovie> page = userMovieRepository.findByNotesContainingAndViewedTrue("favourite", PageRequest.
+                of(0, 20));
+
+        verify(userMovieRepository).findByNotesContainingAndViewedTrue(any(), any());
+        assertTrue(page.hasContent());
+
     }
 }

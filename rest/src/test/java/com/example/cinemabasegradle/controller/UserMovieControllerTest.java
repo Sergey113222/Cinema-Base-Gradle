@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** JUnit test example */
 
 @ExtendWith(SpringExtension.class)
 class UserMovieControllerTest {
@@ -146,5 +145,55 @@ class UserMovieControllerTest {
                 .getContentAsString();
 
         verify(userMovieService).countFavouriteByUserId(any());
+    }
+
+    @Test
+    void sortByColumnNameAsc() throws Exception {
+        when(userMovieService.sortByColumnNameAsc(any())).thenReturn(movieDtoList);
+
+        mockMvc.perform(get("/favourite/sort")
+                        .param("sortColumn", "rating")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(20)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userMovieService).sortByColumnNameAsc(any());
+    }
+
+    @Test
+    void findAllFiltered() throws Exception {
+        when(userMovieService.filterByRatingAfterAndCreatedAfter(any(), any(), any())).thenReturn(movieDtoList);
+
+        mockMvc.perform(get("/favourite/filter")
+                        .param("rating", String.valueOf(1))
+                        .param("created", "2000-01-01")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(20)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userMovieService).filterByRatingAfterAndCreatedAfter(any(), any(), any());
+
+    }
+
+    @Test
+    void findAllFilteredNew() throws Exception {
+        when(userMovieService.filterByNotesContainingAndViewedTrue(any(), any())).thenReturn(movieDtoList);
+
+        mockMvc.perform(get("/favourite/filterNew")
+                        .param("search", "the")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(20)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userMovieService).filterByNotesContainingAndViewedTrue(any(), any());
     }
 }

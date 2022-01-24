@@ -1,11 +1,12 @@
 package com.example.cinemabasegradle.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.cinemabasegradle.dto.ProfileDto;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
+import com.example.cinemabasegradle.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -17,14 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import com.example.cinemabasegradle.repository.UserRepository;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-/** Integration test example */
 
 @ActiveProfiles("testJdbc")
 @SpringBootTest

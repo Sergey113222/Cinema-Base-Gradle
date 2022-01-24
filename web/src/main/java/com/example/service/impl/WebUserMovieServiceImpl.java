@@ -5,18 +5,20 @@ import com.example.service.WebUserMovieService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class WebUserMovieServiceImpl implements WebUserMovieService {
 
     private static final String QUERY = "userMovieId";
@@ -59,9 +61,10 @@ public class WebUserMovieServiceImpl implements WebUserMovieService {
     @Override
     public List<MovieDto> fetchAllByUserId(@PathVariable("user_id") Long id) {
         URI uri = createURI(favouriteAll + id).build().toUri();
-        MovieDto[] request = restTemplate.getForObject(uri, MovieDto[].class);
-        assert request != null;
-        return Arrays.asList(request);
+        ResponseEntity<List<MovieDto>> request = restTemplate
+                .exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+        });
+        return request.getBody();
     }
 
     @Override

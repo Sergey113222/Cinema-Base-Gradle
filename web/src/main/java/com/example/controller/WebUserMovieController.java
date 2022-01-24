@@ -40,7 +40,6 @@ public class WebUserMovieController {
 
     @GetMapping("/favourite/edit/{id}")
     public String getFavouriteMovie(Model model, @PathVariable Long id) {
-        webUserMovieService.fetchFavouriteMovieByUserId(id);
         model.addAttribute("movie", webUserMovieService.fetchFavouriteMovieByUserId(id));
         return "edit";
     }
@@ -57,5 +56,4 @@ public class WebUserMovieController {
         webUserMovieService.updateFavouriteMovie(movie, id);
         return "redirect:/user";
     }
-
 }

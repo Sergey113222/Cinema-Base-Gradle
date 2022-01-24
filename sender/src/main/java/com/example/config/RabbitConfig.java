@@ -30,7 +30,7 @@ public class RabbitConfig {
 
     @Bean
     Queue queue() {
-        return new Queue(queue, false);
+        return new Queue(queue, Boolean.FALSE);
     }
 
     @Bean

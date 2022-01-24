@@ -1,10 +1,4 @@
 package com.example.config;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.http.client.config.RequestConfig;
@@ -19,10 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- *
- * @author didin
- */
+
 @Configuration
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class WebConfig implements WebMvcConfigurer {

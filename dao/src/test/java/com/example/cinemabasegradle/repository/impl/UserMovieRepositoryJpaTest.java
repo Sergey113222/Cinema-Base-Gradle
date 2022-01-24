@@ -11,11 +11,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,6 +67,7 @@ class UserMovieRepositoryJpaTest {
                 .rating(8)
                 .user(savedUser)
                 .created(LocalDate.now())
+                .viewed(true)
                 .build();
     }
 
@@ -88,27 +92,45 @@ class UserMovieRepositoryJpaTest {
         assertEquals(Optional.empty(), userMovieRepository.findById(userMovie.getId()));
     }
 
-//    @Test
-//    void findAllByUserId() {
-//        Long userId = userMovieRepository.save(userMovie).getId();
-//        List<UserMovie> userMovieList = userMovieRepository.findAllByUserId(userId).get();
-//        assertTrue(userMovieList.size() > 0);
-//    }
-//
-//    @Test
-//    void countUserMovieByUserId() {
-//        Long userId = userMovieRepository.save(userMovie).getId();
-//        assertEquals(1, userMovieRepository.countUserMovieByUserId(userId));
-//    }
-//
-//    @Test
-//    void findAll() {
-//        userMovieRepository.save(userMovie);
-//        userMovieRepository.save(userMovie);
-//        userMovieRepository.save(userMovie);
-//
-//        //userMovieRepository.findAll("id", PageRequest.of(0, 2));
-//        Page<UserMovie> all = userMovieRepository.findAll(PageRequest.of(0, 2));
-//
-//    }
+    @Test
+    void findAll() {
+        userMovieRepository.save(userMovie);
+        userMovieRepository.save(userMovie);
+
+        Page<UserMovie> pageAll = userMovieRepository.findAll(PageRequest.of(0, 3));
+        List<UserMovie> userMovieList = pageAll.getContent();
+        assertTrue(userMovieList.size() > 1);
+    }
+
+    @Test
+    void findByRatingAfterAndCreatedAfter() {
+        userMovieRepository.save(userMovie);
+        userMovieRepository.save(userMovie);
+        userMovie.setRating(1);
+        userMovieRepository.save(userMovie);
+
+        Page<UserMovie> pageAll = userMovieRepository.findByRatingAfterAndCreatedAfter(7,
+                LocalDate.of(2000, 1, 1), PageRequest.of(0, 3));
+        List<UserMovie> userMovieList = pageAll.getContent();
+        assertEquals(2, userMovieList.size());
+
+        Page<UserMovie> pageAllConstraint = userMovieRepository.findByRatingAfterAndCreatedAfter(7,
+                LocalDate.of(2000, 1, 1), PageRequest.of(0, 1));
+        List<UserMovie> userMovieListConstraint = pageAllConstraint.getContent();
+        assertEquals(1, userMovieListConstraint.size());
+    }
+
+    @Test
+    void findByNotesContainingAndViewedTrue() {
+        userMovieRepository.save(userMovie);
+        userMovie.setViewed(false);
+        userMovieRepository.save(userMovie);
+        userMovie.setViewed(true);
+        userMovie.setNotes("This is the worst film !!!");
+        userMovieRepository.save(userMovie);
+
+        Page<UserMovie> pageAll = userMovieRepository.findByNotesContainingAndViewedTrue("best", PageRequest.of(0, 3));
+        List<UserMovie> userMovieList = pageAll.getContent();
+        assertEquals(1, userMovieList.size());
+    }
 }

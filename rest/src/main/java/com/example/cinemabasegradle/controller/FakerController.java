@@ -6,7 +6,6 @@ import com.example.cinemabasegradle.service.impl.FakerServiceImpl;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
-import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,15 +22,12 @@ import java.util.List;
 public class FakerController {
     private final FakerServiceImpl fakerService;
     private final UserRepositoryJdbcImpl userRepositoryJdbc;
-    private final StopWatch timer = new StopWatch();
 
     @PostMapping(value = "/generatorSlow")
     public void generatorSlow(@RequestParam Integer quantity) {
-        timer.start();
         for (int i = 0; i < quantity; i++) {
             userRepositoryJdbc.save(fakerService.createFakeUser());
         }
-        timer.stop();
     }
 
     @PostMapping(value = "/generatorFast")
@@ -40,9 +36,7 @@ public class FakerController {
         for (int i = 0; i < quantity; i++) {
             userList.add(fakerService.createFakeUser());
         }
-        timer.start();
         userRepositoryJdbc.saveAllUser(userList);
-        timer.stop();
     }
 
     @PostMapping(value = "/deleter")

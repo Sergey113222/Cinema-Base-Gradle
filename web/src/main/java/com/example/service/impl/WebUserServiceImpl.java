@@ -5,18 +5,20 @@ import com.example.service.WebUserService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class WebUserServiceImpl implements WebUserService {
 
     private final RestTemplate restTemplate;
@@ -38,11 +40,11 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     public List<UserDto> findAllUsers() {
-
         URI uri = createURI(allUsers).build().toUri();
-        UserDto[] request = restTemplate.getForObject(uri, UserDto[].class);
-        assert request != null;
-        return Arrays.asList(request);
+        ResponseEntity<List<UserDto>> request = restTemplate
+                .exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+        });
+        return request.getBody();
     }
 
     @Override

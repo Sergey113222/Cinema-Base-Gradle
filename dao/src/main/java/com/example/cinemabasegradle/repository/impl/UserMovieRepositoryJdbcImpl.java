@@ -1,5 +1,6 @@
 package com.example.cinemabasegradle.repository.impl;
 
+import com.example.cinemabasegradle.exception.ResourceNotFoundException;
 import com.example.cinemabasegradle.mapper.UserMovieRowMapper;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
@@ -41,6 +42,7 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     private static final String OFFSET = "offset";
     private static final String SORT_COLUMN = "sortColumn";
     private static final String SEARCH = "search";
+    private static final String EXC_MESSAGE = "Can not found";
 
     @Value("${sql.user_movie.find_by_id}")
     private String findByIdQuery;
@@ -107,7 +109,7 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         Map<String, Object> params = new HashMap<>();
         params.put(USER_ID, userId);
         List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllByUserIdQuery, params, userMovieRowMapper);
-        return Optional.ofNullable(userMovies);
+        return Optional.of(userMovies);
     }
 
     @Override
@@ -122,12 +124,15 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
         Map<String, Object> params = new HashMap<>();
         params.put(LIMIT, pageable.getPageSize());
         params.put(OFFSET, pageable.getOffset());
-        params.put(SORT_COLUMN, pageable.getSort());
+        params.put(SORT_COLUMN, String.valueOf(pageable.getSort()).replaceAll("[: ASC]", ""));
+
         List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllQuery, params, userMovieRowMapper);
 
         Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
-        assert total != null;
-        return new PageImpl<>(userMovies, pageable, total);
+        if (total != null) {
+            return new PageImpl<>(userMovies, pageable, total);
+        }
+        throw new ResourceNotFoundException(EXC_MESSAGE);
     }
 
     @Override
@@ -141,8 +146,10 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
                 params, userMovieRowMapper);
 
         Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
-        assert total != null;
-        return new PageImpl<>(userMovies, pageable, total);
+        if (total != null) {
+            return new PageImpl<>(userMovies, pageable, total);
+        }
+        throw new ResourceNotFoundException(EXC_MESSAGE);
     }
 
     @Override
@@ -155,7 +162,9 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
                 params, userMovieRowMapper);
 
         Long total = namedParameterJdbcTemplate.queryForObject(countAll, params, Long.class);
-        assert total != null;
-        return new PageImpl<>(userMovies, pageable, total);
+        if (total != null) {
+            return new PageImpl<>(userMovies, pageable, total);
+        }
+        throw new ResourceNotFoundException(EXC_MESSAGE);
     }
 }
