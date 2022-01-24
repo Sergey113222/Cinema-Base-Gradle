@@ -87,17 +87,20 @@ public class UserMovieServiceImpl implements UserMovieService {
 
     @Override
     public List<MovieDto> fetchAllByUserId(Long userId) {
-        List<UserMovie> userMovies = userMovieRepository.findAllByUserId(userId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId)));
-        List<MovieDto> movieDtoList = new ArrayList<>();
-        for (UserMovie userMovie : userMovies) {
-            MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
-            movieDto.setUserMovieId(userMovie.getId());
-            movieDto.setPersonalRating(userMovie.getRating());
-            movieDto.setPersonalNotes(userMovie.getNotes());
-            movieDtoList.add(movieDto);
+        List<UserMovie> userMovies = userMovieRepository.findAllByUserId(userId);
+        if (userMovies.isEmpty()) {
+            throw new ResourceNotFoundException(String.format(ErrorMessages.RESOURCE_NOT_FOUND, userId));
+        } else {
+            List<MovieDto> movieDtoList = new ArrayList<>();
+            for (UserMovie userMovie : userMovies) {
+                MovieDto movieDto = searchService.searchMoviesById(userMovie.getExternalMovieId());
+                movieDto.setUserMovieId(userMovie.getId());
+                movieDto.setPersonalRating(userMovie.getRating());
+                movieDto.setPersonalNotes(userMovie.getNotes());
+                movieDtoList.add(movieDto);
+            }
+            return movieDtoList;
         }
-        return movieDtoList;
     }
 
     @Override

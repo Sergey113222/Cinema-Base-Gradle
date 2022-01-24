@@ -105,11 +105,10 @@ public class UserMovieRepositoryJdbcImpl implements UserMovieRepository {
     }
 
     @Override
-    public Optional<List<UserMovie>> findAllByUserId(Long userId) {
+    public List<UserMovie> findAllByUserId(Long userId) {
         Map<String, Object> params = new HashMap<>();
         params.put(USER_ID, userId);
-        List<UserMovie> userMovies = namedParameterJdbcTemplate.query(findAllByUserIdQuery, params, userMovieRowMapper);
-        return Optional.of(userMovies);
+        return namedParameterJdbcTemplate.query(findAllByUserIdQuery, params, userMovieRowMapper);
     }
 
     @Override

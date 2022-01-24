@@ -96,7 +96,7 @@ class UserMovieRepositoryJdbcImplTest {
     @Test
     void findAllByUserId() {
         Long userId = userMovieRepository.save(userMovie).getId();
-        List<UserMovie> userMovieList = userMovieRepository.findAllByUserId(userId).get();
+        List<UserMovie> userMovieList = userMovieRepository.findAllByUserId(userId);
         assertTrue(userMovieList.size() > 0);
     }
 

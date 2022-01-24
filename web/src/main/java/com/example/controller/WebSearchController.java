@@ -16,7 +16,7 @@ public class WebSearchController {
 
     @GetMapping("/movie")
     public String movie(Model model) {
-        model.addAttribute("movies", webSearchService.getMovieListPopular());
+        model.addAttribute("movies", webSearchService.getPopularMovies());
         return "movie";
     }
 }

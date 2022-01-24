@@ -171,7 +171,8 @@ class UserMovieServiceImplTest {
     @DisplayName("Should throw ResourceNotFoundException when userId doesn't exist.")
     void throwExceptionWhenFindAllByUserId() {
         final long nonExistingId = 12902450235L;
-        doReturn(Optional.empty()).when(userMovieRepository).findAllByUserId(nonExistingId);
+        List<UserMovie> userMovies = new ArrayList<>();
+        doReturn(userMovies).when(userMovieRepository).findAllByUserId(nonExistingId);
         assertThrows(
                 ResourceNotFoundException.class,
                 () -> userMovieService.fetchAllByUserId(nonExistingId));
@@ -179,7 +180,7 @@ class UserMovieServiceImplTest {
 
     @Test
     void fetchAllByUserId() {
-        when(userMovieRepository.findAllByUserId(any())).thenReturn(Optional.of(userMovieList));
+        when(userMovieRepository.findAllByUserId(any())).thenReturn(userMovieList);
         when(searchService.searchMoviesById(any())).thenReturn(movieDto);
         List<MovieDto> movieDtoList = userMovieService.fetchAllByUserId(userMovie.getId());
         assertTrue(movieDtoList.size() > 0);

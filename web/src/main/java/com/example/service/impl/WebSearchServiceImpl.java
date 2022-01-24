@@ -34,7 +34,7 @@ public class WebSearchServiceImpl implements WebSearchService {
     @Value("${cinema-base.path-search-movie-popular}")
     private String searchMoviePopular;
 
-    public List<MovieDto> getMovieListPopular() {
+    public List<MovieDto> getPopularMovies() {
         URI uri = createURI(searchMoviePopular).build().toUri();
         return getMoviesListFromResource(uri);
     }

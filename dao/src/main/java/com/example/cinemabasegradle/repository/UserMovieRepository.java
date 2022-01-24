@@ -16,7 +16,7 @@ public interface UserMovieRepository {
 
     void delete(UserMovie userMovie);
 
-    Optional<List<UserMovie>> findAllByUserId(Long userId);
+    List<UserMovie> findAllByUserId(Long userId);
 
     Long countUserMovieByUserId(Long userId);
 

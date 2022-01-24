@@ -50,7 +50,7 @@ class WebSearchControllerTest {
 
     @Test
     void movie() throws Exception {
-        when(webSearchService.getMovieListPopular()).thenReturn(movieDtoList);
+        when(webSearchService.getPopularMovies()).thenReturn(movieDtoList);
 
         mockMvc.perform(get("/movie/"))
                 .andExpect(status().isOk())
@@ -58,6 +58,6 @@ class WebSearchControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        verify(webSearchService).getMovieListPopular();
+        verify(webSearchService).getPopularMovies();
     }
 }

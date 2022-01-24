@@ -57,7 +57,7 @@ class WebSearchServiceImplTest {
         ResponseEntity<List<MovieDto>> responseEntity = new ResponseEntity<>(movieDtos, HttpStatus.OK);
         when(restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<List<MovieDto>>() {
         })).thenReturn(responseEntity);
-        List<MovieDto> movieDtoListFound = webSearchService.getMovieListPopular();
+        List<MovieDto> movieDtoListFound = webSearchService.getPopularMovies();
         verify(restTemplate, Mockito.times(1))
                 .exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<List<MovieDto>>() {
         });
