@@ -1,0 +1,20 @@
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation project(path: ':common', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation "org.springframework.amqp:spring-rabbit"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com/example/rabbitmailsender/RabbitMailSenderApplication'
+    }
+}

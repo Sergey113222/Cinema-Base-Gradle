@@ -1,0 +1,3 @@
+FROM adoptopenjdk:11-jre-hotspot
+COPY web/build/libs/*.jar  /opt/movie-web.jar
+ENTRYPOINT ["java", "-jar", "/opt/movie-web.jar"]

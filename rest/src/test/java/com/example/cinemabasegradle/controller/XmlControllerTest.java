@@ -1,22 +1,37 @@
 package com.example.cinemabasegradle.controller;
 
+import com.example.cinemabasegradle.repository.impl.UserRepositoryJdbcImpl;
+import com.example.cinemabasegradle.service.XmlService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@ActiveProfiles("testJdbc")
-@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 class XmlControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
+
+    @Mock
+    private XmlService xmlService;
+    @Mock
+    private UserRepositoryJdbcImpl userRepositoryJdbc;
+    @InjectMocks
+    private XmlController xmlController;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(xmlController)
+                .alwaysDo(MockMvcResultHandlers.print()).build();
+    }
 
     @Test
     void marshalXml() throws Exception {

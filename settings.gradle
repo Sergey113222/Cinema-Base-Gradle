@@ -6,3 +6,6 @@ include 'rest'
 include 'service'
 include 'generator'
 include 'database'
+include 'sender'
+include 'web'
+

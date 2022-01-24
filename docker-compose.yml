@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
 
@@ -16,11 +16,11 @@ services:
       - '3306:3306'
     volumes:
       - movie-db:/var/lib/mysql
-    networks:
-      - movie-network
 
   movie-service:
-    build: .
+    build:
+      context: .\
+      dockerfile: Dockerfile
     image: 'movie-service:latest'
     container_name: movie-service
     restart: unless-stopped
@@ -30,12 +30,42 @@ services:
       - 'SPRING_PROFILES_ACTIVE=docker'
     depends_on:
       - movie-db
-    networks:
-      - movie-network
 
-networks:
-  movie-network:
+  movie-sender:
+    build:
+      context: .\
+      dockerfile: Dockerfile-sender
+    image: 'movie-sender:latest'
+    container_name: movie-sender
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+    environment:
+      - 'SPRING_PROFILES_ACTIVE=docker_sender'
 
+  movie-frontend:
+    build:
+      context: .\
+      dockerfile: Dockerfile-frontend
+    image: 'movie-frontend:latest'
+    container_name: movie-frontend
+    restart: unless-stopped
+    ports:
+      - '8585:8585'
+    environment:
+      - 'SPRING_PROFILES_ACTIVE=docker'
+
+  movie-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'movie-rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/data/:/var/lib/movie-rabbitmq
+      - ./rabbitmq/log/:/var/log/movie-rabbitmq
 
 volumes:
   movie-db: { }
+  movie-rabbitmq: { }
+

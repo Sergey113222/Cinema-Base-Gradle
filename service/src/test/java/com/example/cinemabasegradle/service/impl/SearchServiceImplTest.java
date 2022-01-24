@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 @ActiveProfiles({"testService", "testJdbc"})
 @SpringBootTest(classes = EmbeddedTestServiceConfig.class)
 class SearchServiceImplTest {

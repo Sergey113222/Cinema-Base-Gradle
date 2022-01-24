@@ -6,15 +6,12 @@ import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,32 +24,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = EmbeddedTestConfig.class)
 @ActiveProfiles("testJpa")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnableJpaRepositories
-@Sql(scripts = "classpath:/sql/user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "classpath:/sql/deleteUser.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class UserRepositoryJpaTest {
 
     @Autowired
     private UserRepository userRepository;
     private User user;
-
     private static final Long ID = 10L;
     private static final String USERNAME = "TestUsername";
     private static final String EMAIL = "test@mail.ru";
 
-
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .username("TestUsername2")
-                .password("TestPassword2")
-                .email("test2@mail.ru")
+                .username("TestUserName")
+                .password("TestPassword")
+                .email("test1@mail.ru")
                 .role(Role.ROLE_USER)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar("xxx")
-                        .firstName("Serega")
+                        .firstName("Ivan")
                         .lastName("Ivanov")
                         .age(20)
                         .language("en")
@@ -64,50 +56,52 @@ class UserRepositoryJpaTest {
 
 
     @Test
-    @Order(1)
+    @Transactional
     void findByIdAndActiveTrue() {
-        Optional<User> optionalUser = userRepository.findByIdAndActiveTrue(ID);
+        User savedUser = userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findByIdAndActiveTrue(savedUser.getId());
         assertTrue(optionalUser.isPresent());
         User user = optionalUser.get();
-        assertEquals(ID, user.getId());
+        assertEquals(savedUser.getId(), user.getId());
         assertTrue(user.getActive());
     }
 
     @Test
-    @Order(2)
+    @Transactional
     void findByUsername() {
-        User user = userRepository.findByUsername(USERNAME);
-        assertEquals(USERNAME, user.getUsername());
+        User savedUser = userRepository.save(user);
+        User user = userRepository.findByUsername(savedUser.getUsername());
+        assertEquals(savedUser.getUsername(), user.getUsername());
     }
 
     @Test
-    @Order(3)
+    @Transactional
     void findAll() {
         userRepository.save(user);
         List<User> userList = userRepository.findAll();
-        assertEquals(2, userList.size());
+        assertEquals(1, userList.size());
     }
 
     @Test
-    @Order(4)
+    @Transactional
     void findByEmailAndActiveTrue() {
-        Optional<User> optionalUser = userRepository.findByEmailAndActiveTrue(EMAIL);
+        User savedUser = userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findByEmailAndActiveTrue(savedUser.getEmail());
         assertTrue(optionalUser.isPresent());
         User user = optionalUser.get();
-        assertEquals(EMAIL, user.getEmail());
+        assertEquals(savedUser.getEmail(), user.getEmail());
         assertTrue(user.getActive());
     }
 
     @Test
-    @Order(5)
+    @Transactional
     void save() {
         assertNotNull(userRepository.save(user).getId());
     }
 
     @Test
-    @Order(5)
-    @Sql(scripts = "classpath:/sql/deleteAll.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deleteUser() {
+        user.setEmail("test2@mail.ru");
         Long id = userRepository.save(user).getId();
         userRepository.deleteUser(id);
         User deletedUser = userRepository.findByUsername(user.getUsername());
