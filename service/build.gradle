@@ -14,7 +14,7 @@ ext{
 
 dependencies {
     implementation project(path: ':dao', configuration: 'default')
-    implementation project(path: ':security', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"

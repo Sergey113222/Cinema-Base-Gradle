@@ -1,5 +1,8 @@
-package com.example.cinemabasegradle.exception;
+package com.example.cinemabasegradle.exceptionhandler;
 
+import com.example.cinemabasegradle.exception.ExceptionDto;
+import com.example.cinemabasegradle.exception.ResourceNotFoundException;
+import com.example.cinemabasegradle.exception.SearchMovieException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

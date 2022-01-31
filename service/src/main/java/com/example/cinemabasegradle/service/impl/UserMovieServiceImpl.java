@@ -4,7 +4,6 @@ import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
-import com.example.cinemabasegradle.model.JwtUser;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
@@ -36,8 +35,8 @@ public class UserMovieServiceImpl implements UserMovieService {
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
         Authentication authenticate = SecurityContextHolder.getContext().getAuthentication();
-        JwtUser principal = (JwtUser) authenticate.getPrincipal();
-        Long userId = principal.getId();
+//        JwtUser principal = (JwtUser) authenticate.getPrincipal();
+        Long userId = 1L;// = principal.getId();
         User user = userRepository
                 .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->
