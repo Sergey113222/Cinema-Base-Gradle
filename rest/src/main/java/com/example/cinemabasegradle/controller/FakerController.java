@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class FakerController {
     private final UserRepositoryJdbcImpl userRepositoryJdbc;
 
     @PostMapping(value = "/generatorSlow")
+    @RolesAllowed("ROLE_ADMIN")
     public void generatorSlow(@RequestParam Integer quantity) {
         for (int i = 0; i < quantity; i++) {
             userRepositoryJdbc.save(fakerService.createFakeUser());
@@ -31,6 +33,7 @@ public class FakerController {
     }
 
     @PostMapping(value = "/generatorFast")
+    @RolesAllowed("ROLE_ADMIN")
     public void generatorFast(@RequestParam Integer quantity) {
         List<User> userList = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
@@ -40,6 +43,7 @@ public class FakerController {
     }
 
     @PostMapping(value = "/deleter")
+    @RolesAllowed("ROLE_ADMIN")
     public void deleter() {
         userRepositoryJdbc.deleteAllUser();
     }

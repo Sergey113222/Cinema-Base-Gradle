@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.cinemabasegradle.service.UserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
@@ -26,6 +27,7 @@ public class RegistrationController {
     }
 
     @PutMapping(value = "/update")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public void updateUser(@RequestBody @Valid UserDto userDto) {
         userService.updateUser(userDto);
     }

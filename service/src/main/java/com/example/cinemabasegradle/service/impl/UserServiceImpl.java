@@ -1,6 +1,8 @@
 package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.converter.UserMapper;
+import com.example.cinemabasegradle.dto.AuthenticationRequestDto;
+import com.example.cinemabasegradle.dto.AuthenticationResponseDto;
 import com.example.cinemabasegradle.dto.UserDto;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.example.cinemabasegradle.exception.ErrorMessages;
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.cinemabasegradle.repository.UserRepository;
@@ -26,11 +29,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     @Transactional
     public UserDto createUser(UserDto userDto) {
         userDto.setRole(Role.ROLE_USER);
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         User user = userMapper.toModel(userDto);
         user.setActive(true);
         Profile profile = user.getProfile();

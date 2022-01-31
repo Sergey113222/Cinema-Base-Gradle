@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -28,12 +29,14 @@ public class XmlController {
     }
 
     @PostMapping(value = "/marshalXml")
+    @RolesAllowed("ROLE_ADMIN")
     public void marshalXml() {
         List<User> userList = userRepository.findAll();
         xmlService.marshal(userList, FILE_PATH);
     }
 
     @PostMapping(value = "/unmarshalXml")
+    @RolesAllowed("ROLE_ADMIN")
     public List<User> unmarshalXml() {
         return xmlService.unmarshal(FILE_PATH);
     }

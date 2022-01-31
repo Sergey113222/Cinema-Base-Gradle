@@ -8,4 +8,5 @@ include 'generator'
 include 'database'
 include 'sender'
 include 'web'
+include 'security'
 

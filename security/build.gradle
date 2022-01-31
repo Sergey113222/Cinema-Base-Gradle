@@ -1,0 +1,17 @@
+group 'com.example'
+version '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation project(path: ':common', configuration: 'default')
+    implementation project(path: ':dao', configuration: 'default')
+    implementation project(path: ':database', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}

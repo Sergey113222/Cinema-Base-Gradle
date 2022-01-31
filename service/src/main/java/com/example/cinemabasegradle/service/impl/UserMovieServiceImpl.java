@@ -4,6 +4,7 @@ import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
+import com.example.cinemabasegradle.model.JwtUser;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.model.UserMovie;
 import com.example.cinemabasegradle.repository.UserMovieRepository;
@@ -14,6 +15,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +35,9 @@ public class UserMovieServiceImpl implements UserMovieService {
 
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
-        Long userId = 1L;
+        Authentication authenticate = SecurityContextHolder.getContext().getAuthentication();
+        JwtUser principal = (JwtUser) authenticate.getPrincipal();
+        Long userId = principal.getId();
         User user = userRepository
                 .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->
