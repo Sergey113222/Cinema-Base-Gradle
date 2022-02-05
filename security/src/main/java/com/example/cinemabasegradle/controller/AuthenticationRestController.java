@@ -26,7 +26,7 @@ public class AuthenticationRestController {
     public AuthenticationResponseDto auth(@Valid @RequestBody AuthenticationRequestDto requestDto) {
 
         User user = jwtUserDetailsService.loadUserByEmail(requestDto.getEmail(), requestDto.getPassword());
-        String token = jwtTokenProvider.createToken(requestDto.getEmail(), user.getRole());
+        String token = jwtTokenProvider.createToken(user.getId(), user.getRole());
 
         return new AuthenticationResponseDto(requestDto.getEmail(), token);
     }

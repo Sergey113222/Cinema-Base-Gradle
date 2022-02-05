@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@ControllerAdvice
 @Slf4j
+@ControllerAdvice
 public class AopExceptionHandler {
 
     private static final Integer UNAUTHORIZED_CODE = 401;
@@ -74,3 +74,4 @@ public class AopExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
     }
 }
+

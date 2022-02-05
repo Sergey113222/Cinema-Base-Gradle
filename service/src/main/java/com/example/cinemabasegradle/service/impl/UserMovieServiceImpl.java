@@ -35,8 +35,7 @@ public class UserMovieServiceImpl implements UserMovieService {
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
         Authentication authenticate = SecurityContextHolder.getContext().getAuthentication();
-//        JwtUser principal = (JwtUser) authenticate.getPrincipal();
-        Long userId = 1L;// = principal.getId();
+        Long userId = Long.parseLong(authenticate.getPrincipal().toString());
         User user = userRepository
                 .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->

@@ -3,10 +3,11 @@ package com.example.cinemabasegradle.security;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,20 +41,15 @@ public class JwtTokenProvider {
 
 
     public Authentication getAuthentication(String token) {
-        return new UsernamePasswordAuthenticationToken(this.getUsername(token), "", getAuthorities(token));
+        return new UsernamePasswordAuthenticationToken(this.getId(token), "", getAuthorities(token));
     }
 
-    public String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    public Long getId(String token) {
+        return Long.parseLong(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("jti", String.class));
     }
 
     public List<GrantedAuthority> getAuthorities(String token) {
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-
-        String[] chunks = token.split("\\.");
-        String payload = new String(decoder.decode(chunks[1]));
-        JSONObject jsonObject = new JSONObject(payload);
-        String role = jsonObject.getString("role");
+        String role = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("role", String.class);
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
@@ -62,17 +58,21 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(AUTHORIZATION);
         if (bearerToken == null && !bearerToken.startsWith(BEARER)) {
-            throw new IllegalArgumentException(MESSAGE_EMPTY);
+            throw new BadCredentialsException(MESSAGE);
         }
         return bearerToken.substring(7);
     }
 
     public boolean validateToken(String token) {
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
-        if (claims.getBody().getExpiration().before(new Date())) {
-            return false;
+            if (claims.getBody().getExpiration().before(new Date())) {
+                return false;
+            }
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new BadCredentialsException(MESSAGE);
         }
-        return true;
     }
 }

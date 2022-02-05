@@ -28,8 +28,8 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username, Role role) {
-        Claims claims = Jwts.claims().setSubject(username);
+    public String createToken(Long id, Role role) {
+        Claims claims = Jwts.claims().setId(id.toString());
         claims.put("role", role);
 
         Date now = new Date();
