@@ -8,6 +8,7 @@ import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
+import com.example.cinemabasegradle.repository.impl.RoleRepositoryJpa;
 import com.example.cinemabasegradle.service.UserService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,18 +28,27 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepositoryJpa roleRepositoryJpa;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     @Transactional
     public UserDto createUser(UserDto userDto) {
-        userDto.setRole(Role.ROLE_USER);
         userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         User user = userMapper.toModel(userDto);
         user.setActive(true);
+
+        List<Role> roles = user.getRoles();
+        List<Role> rolesFromDB = new ArrayList<>();
+        for (Role role : roles) {
+            rolesFromDB.add(roleRepositoryJpa.findByName(role.getName()));
+        }
+
+        user.setRoles(rolesFromDB);
         Profile profile = user.getProfile();
         profile.setUser(user);
+
         User createdUser = userRepository.save(user);
         log.info("In createUser - user: {} successfully created", createdUser);
         return userDto;

@@ -18,6 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,16 @@ class UserMovieRepositoryJdbcImplTest {
 
     @BeforeEach
     void setUp() {
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
+
         user = User.builder()
                 .username("TestUserName1")
                 .password("TestPassword1")
                 .email("testEmail1@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleList)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar("xxx1")

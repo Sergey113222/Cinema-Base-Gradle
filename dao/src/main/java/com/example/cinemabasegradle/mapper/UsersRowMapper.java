@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UsersRowMapper implements RowMapper<User> {
@@ -27,16 +29,27 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String AGE = "age";
     private static final String LANGUAGE = "language";
 
+    private static final String ROLE_ID = "role.id";
+    private static final String NAME = "name";
+
     @Override
     public User mapRow(ResultSet resultSet, int i) throws SQLException {
         User user = new User();
         Profile profile = new Profile();
+        Role role = new Role();
 
         user.setId(resultSet.getLong(ID));
         user.setUsername(resultSet.getString(USERNAME));
         user.setEmail(resultSet.getString(EMAIL));
         user.setPassword(resultSet.getString(PASSWORD));
-        user.setRole(Role.valueOf(resultSet.getString(ROLE)));
+
+        role.setId(resultSet.getLong(ROLE_ID));
+        role.setName(resultSet.getString(NAME));
+
+        List<Role> roleList = new ArrayList<>();
+        roleList.add(role);
+
+        user.setRoles(roleList);
         user.setActive(resultSet.getBoolean(ACTIVE));
         if (resultSet.getDate(CREATED) != null) {
             user.setCreated(resultSet.getDate(CREATED).toLocalDate());

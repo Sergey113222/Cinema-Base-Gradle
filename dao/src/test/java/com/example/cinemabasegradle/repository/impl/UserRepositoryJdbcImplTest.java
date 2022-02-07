@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +32,16 @@ class UserRepositoryJdbcImplTest {
 
     @BeforeEach
     void setUp() {
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
+
         user = User.builder()
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleList)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar("xxx")

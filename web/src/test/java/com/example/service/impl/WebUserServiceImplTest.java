@@ -1,8 +1,8 @@
 package com.example.service.impl;
 
 import com.example.cinemabasegradle.dto.ProfileDto;
+import com.example.cinemabasegradle.dto.RoleDto;
 import com.example.cinemabasegradle.dto.UserDto;
-import com.example.cinemabasegradle.model.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,13 +39,18 @@ class WebUserServiceImplTest {
         ReflectionTestUtils.setField(webUserService, "allUsers", "/users");
         ReflectionTestUtils.setField(webUserService, "favouriteCount", "/count/");
 
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        RoleDto roleDto = new RoleDto();
+        roleDto.setId(1L);
+        roleDto.setName("ROLE_USER");
+        roleDtoList.add(roleDto);
 
         UserDto userDto = UserDto.builder()
                 .id(1L)
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleDtoList)
                 .profileDto(ProfileDto.builder()
                         .id(1L)
                         .avatar("xxx")

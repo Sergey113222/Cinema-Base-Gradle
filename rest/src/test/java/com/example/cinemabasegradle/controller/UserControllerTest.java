@@ -1,12 +1,14 @@
 package com.example.cinemabasegradle.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.cinemabasegradle.dto.ProfileDto;
+import com.example.cinemabasegradle.dto.RoleDto;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
+import com.example.cinemabasegradle.repository.UserRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -18,8 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import com.example.cinemabasegradle.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,11 +50,18 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
+
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
+        roleList.add(role);
+
         user = User.builder()
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleList)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar("xxx")
@@ -65,12 +74,18 @@ class UserControllerTest {
         Profile profile = user.getProfile();
         profile.setUser(user);
 
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        RoleDto roleDto = new RoleDto();
+        roleDto.setId(1L);
+        roleDto.setName("ROLE_USER");
+        roleDtoList.add(roleDto);
+
         userDto = UserDto.builder()
                 .id(1L)
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleDtoList)
                 .profileDto(ProfileDto.builder()
                         .id(1L)
                         .avatar("xxx")
@@ -97,7 +112,7 @@ class UserControllerTest {
         assertEquals(expectedUserDto.getId(), userDto.getId());
         assertEquals(expectedUserDto.getUsername(), userDto.getUsername());
         assertEquals(expectedUserDto.getPassword(), userDto.getPassword());
-        assertEquals(expectedUserDto.getRole(), userDto.getRole());
+        assertEquals(expectedUserDto.getRoles(), userDto.getRoles());
         assertEquals(expectedUserDto.getProfileDto(), userDto.getProfileDto());
     }
 

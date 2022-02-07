@@ -8,6 +8,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
@@ -23,12 +26,19 @@ public class FakerServiceImpl {
     private User user;
 
     public User createFakeUser() {
+
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
+        roleList.add(role);
+
         user = User.builder()
                 .username(faker.name().fullName())
                 .password(faker.lorem().characters(MIN_CHAR, MAX_CHAR))
                 .email(faker.name().firstName() + "_" + faker.name().lastName()
                         + faker.lorem().characters(MIN_CHAR, MAX_CHAR) + EMAIL)
-                .role(Role.ROLE_USER)
+                .roles(roleList)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar(faker.avatar().image())

@@ -1,0 +1,56 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="4" author="Sergey">
+        <sql>
+            create table role
+            (
+                id      bigint       auto_increment   primary key,
+                name    varchar(255)                  not null,
+                created date                          not null,
+                updated date                          null
+            );
+        </sql>
+        <rollback>
+            DROP table role;
+        </rollback>
+    </changeSet>
+    <changeSet id="5" author="Sergey">
+        <sql>
+            alter table user
+            DROP
+            column role
+        </sql>
+        <rollback>
+            alter table user
+            add column role varchar(10) not null
+        </rollback>
+    </changeSet>
+    <changeSet id="6" author="Sergey">
+        <sql>
+            insert into role(id, name, created)
+            values (1, 'ROLE_USER', now());
+            insert into role(id, name, created)
+            values (2, 'ROLE_ADMIN', now());
+        </sql>
+        <rollback>
+            delete from role where id in(1, 2)
+        </rollback>
+    </changeSet>
+    <changeSet id="7" author="Sergey">
+        <sql>
+            create table user_role
+            (
+                user_id bigint not null,
+                role_id bigint not null,
+                primary key (user_id, role_id)
+            );
+        </sql>
+        <rollback>
+            DROP table user_role;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

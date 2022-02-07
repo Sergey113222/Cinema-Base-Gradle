@@ -1,8 +1,5 @@
-package com.example.cinemabasegradle.exceptionhandler;
+package com.example.cinemabasegradle.exception;
 
-import com.example.cinemabasegradle.exception.ExceptionDto;
-import com.example.cinemabasegradle.exception.ResourceNotFoundException;
-import com.example.cinemabasegradle.exception.SearchMovieException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +69,18 @@ public class AopExceptionHandler {
         log.error("Caught SearchMovieException exception: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDto> handleIllegalException(IllegalArgumentException ex) {
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setErrorMessage(ex.getMessage());
+        exceptionDto.setStatus(UNAUTHORIZED_CODE);
+        exceptionDto.setTimestamp(LocalDateTime.now());
+
+        log.error("Caught another exception exception: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionDto);
     }
 }
 

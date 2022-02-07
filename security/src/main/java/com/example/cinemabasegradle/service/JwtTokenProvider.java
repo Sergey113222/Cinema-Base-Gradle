@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -28,9 +30,11 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(Long id, Role role) {
+    public String createToken(Long id, List<Role> roles) {
         Claims claims = Jwts.claims().setId(id.toString());
-        claims.put("role", role);
+        List<String> roleStringList = new ArrayList<>();
+        roles.forEach(role -> roleStringList.add(role.getName()));
+        claims.put("roles", roleStringList);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityMilliseconds);

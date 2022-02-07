@@ -27,7 +27,6 @@ import java.util.List;
 public class JwtTokenProvider {
 
     private final static String MESSAGE = "JWT token is expired or invalid";
-    private final static String MESSAGE_EMPTY = "JWT token is empty or incorrect";
     private final static String AUTHORIZATION = "Authorization";
     private final static String BEARER = "Bearer ";
 
@@ -49,15 +48,20 @@ public class JwtTokenProvider {
     }
 
     public List<GrantedAuthority> getAuthorities(String token) {
-        String role = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("role", String.class);
+        List<String> roles = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("roles", List.class);
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role));
+        for (String role:roles) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
         return authorities;
     }
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(AUTHORIZATION);
-        if (bearerToken == null && !bearerToken.startsWith(BEARER)) {
+        if (bearerToken == null) {
+            throw new BadCredentialsException(MESSAGE);
+        }
+        if (!bearerToken.startsWith(BEARER)) {
             throw new BadCredentialsException(MESSAGE);
         }
         return bearerToken.substring(7);
