@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class RoleDto {
-    private Long id;
     @NotNull(message = "Name cannot be null")
     private String name;
 }

@@ -7,8 +7,8 @@ import com.example.cinemabasegradle.exception.ResourceNotFoundException;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
+import com.example.cinemabasegradle.repository.RoleRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
-import com.example.cinemabasegradle.repository.impl.RoleRepositoryJpa;
 import com.example.cinemabasegradle.service.UserService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,10 @@ import java.util.stream.Collectors;
 @SuppressFBWarnings("EI_EXPOSE_REP2")
 public class UserServiceImpl implements UserService {
 
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String MESSAGE = "Can not save user with ROLE_ADMIN";
     private final UserRepository userRepository;
-    private final RoleRepositoryJpa roleRepositoryJpa;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -42,7 +44,11 @@ public class UserServiceImpl implements UserService {
         List<Role> roles = user.getRoles();
         List<Role> rolesFromDB = new ArrayList<>();
         for (Role role : roles) {
-            rolesFromDB.add(roleRepositoryJpa.findByName(role.getName()));
+            if (!role.getName().equals(ROLE_ADMIN)) {
+                rolesFromDB.add(roleRepository.findByName(role.getName()));
+            } else {
+                throw new IllegalArgumentException(MESSAGE);
+            }
         }
 
         user.setRoles(rolesFromDB);

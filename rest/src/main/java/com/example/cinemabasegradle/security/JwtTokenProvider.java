@@ -23,12 +23,13 @@ import java.util.List;
 
 @Component
 @Slf4j
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "DM_DEFAULT_ENCODING"})
 public class JwtTokenProvider {
 
-    private final static String MESSAGE = "JWT token is expired or invalid";
-    private final static String AUTHORIZATION = "Authorization";
-    private final static String BEARER = "Bearer ";
+    private static final String MESSAGE = "JWT token is expired or invalid";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+    private static final Integer MIN_LETTERS = 7;
 
     @Value("${jwt.token.secret}")
     private String secret;
@@ -44,13 +45,15 @@ public class JwtTokenProvider {
     }
 
     public Long getId(String token) {
-        return Long.parseLong(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("jti", String.class));
+        return Long.parseLong(Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
+                .getBody().get("jti", String.class));
     }
 
     public List<GrantedAuthority> getAuthorities(String token) {
-        List<String> roles = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("roles", List.class);
+        List<String> roles = Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
+                .getBody().get("roles", List.class);
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role:roles) {
+        for (String role : roles) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;
@@ -64,17 +67,14 @@ public class JwtTokenProvider {
         if (!bearerToken.startsWith(BEARER)) {
             throw new BadCredentialsException(MESSAGE);
         }
-        return bearerToken.substring(7);
+        return bearerToken.substring(MIN_LETTERS);
     }
 
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-            return true;
+            return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             throw new BadCredentialsException(MESSAGE);
         }

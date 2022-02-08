@@ -41,7 +41,6 @@ class WebUserServiceImplTest {
 
         List<RoleDto> roleDtoList = new ArrayList<>();
         RoleDto roleDto = new RoleDto();
-        roleDto.setId(1L);
         roleDto.setName("ROLE_USER");
         roleDtoList.add(roleDto);
 

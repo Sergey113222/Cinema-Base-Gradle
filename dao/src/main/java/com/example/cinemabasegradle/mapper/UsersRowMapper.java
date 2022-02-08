@@ -18,7 +18,6 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String EMAIL = "email";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
-    private static final String ROLE = "role";
     private static final String ACTIVE = "active";
     private static final String CREATED = "created";
 
@@ -29,7 +28,6 @@ public class UsersRowMapper implements RowMapper<User> {
     private static final String AGE = "age";
     private static final String LANGUAGE = "language";
 
-    private static final String ROLE_ID = "role.id";
     private static final String NAME = "name";
 
     @Override
@@ -43,7 +41,6 @@ public class UsersRowMapper implements RowMapper<User> {
         user.setEmail(resultSet.getString(EMAIL));
         user.setPassword(resultSet.getString(PASSWORD));
 
-        role.setId(resultSet.getLong(ROLE_ID));
         role.setName(resultSet.getString(NAME));
 
         List<Role> roleList = new ArrayList<>();

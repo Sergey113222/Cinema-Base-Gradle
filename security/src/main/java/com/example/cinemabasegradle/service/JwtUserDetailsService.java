@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class JwtUserDetailsService {
 
-    private final static String MESSAGE = "User doesn't exist";
+    private static final String MESSAGE = "User doesn't exist";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 

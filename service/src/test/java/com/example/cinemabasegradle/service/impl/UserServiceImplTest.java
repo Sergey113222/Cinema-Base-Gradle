@@ -74,7 +74,6 @@ class UserServiceImplTest {
 
         List<RoleDto> roleDtoList = new ArrayList<>();
         RoleDto roleDto = new RoleDto();
-        roleDto.setId(1L);
         roleDto.setName("ROLE_USER");
         roleDtoList.add(roleDto);
 
@@ -95,6 +94,7 @@ class UserServiceImplTest {
 
     @Test
     void createUser() {
+
         when(userRepository.save(any())).thenReturn(user);
         when(userMapper.toModel(any())).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(userDto);

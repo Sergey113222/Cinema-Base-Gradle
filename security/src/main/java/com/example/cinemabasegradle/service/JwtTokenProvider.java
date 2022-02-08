@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "DM_DEFAULT_ENCODING"})
 public class JwtTokenProvider {
 
     @Value("${jwt.token.secret}")

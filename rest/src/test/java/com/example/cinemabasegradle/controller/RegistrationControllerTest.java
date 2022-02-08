@@ -3,75 +3,50 @@ package com.example.cinemabasegradle.controller;
 import com.example.cinemabasegradle.dto.ProfileDto;
 import com.example.cinemabasegradle.dto.RoleDto;
 import com.example.cinemabasegradle.dto.UserDto;
-import com.example.cinemabasegradle.model.Profile;
-import com.example.cinemabasegradle.model.Role;
-import com.example.cinemabasegradle.model.User;
-import com.example.cinemabasegradle.repository.UserRepository;
+import com.example.cinemabasegradle.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("testJdbc")
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(SpringExtension.class)
 class RegistrationControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
-    @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private UserRepository userRepository;
+
+    @Mock
+    private UserServiceImpl userService;
+    @InjectMocks
+    private RegistrationController registrationController;
 
     private UserDto userDto;
-    private Long userId;
-
 
     @BeforeEach
     void setUp() {
-        List<Role> roleList = new ArrayList<>();
-        Role role = new Role();
-        role.setId(1L);
-        role.setName("ROLE_USER");
-        roleList.add(role);
-        User user = User.builder()
-                .username("TestUsername2")
-                .password("TestPassword2")
-                .email("test2@mail.ru")
-                .roles(roleList)
-                .active(true)
-                .profile(Profile.builder()
-                        .avatar("xxx")
-                        .firstName("Serega")
-                        .lastName("Ivanov")
-                        .age(20)
-                        .language("en")
-                        .build())
-                .build();
-        Profile profile = user.getProfile();
-        profile.setUser(user);
 
+        mockMvc = MockMvcBuilders.standaloneSetup(registrationController)
+                .setMessageConverters(new MappingJackson2HttpMessageConverter())
+                .alwaysDo(MockMvcResultHandlers.print()).build();
+        objectMapper = new ObjectMapper();
         List<RoleDto> roleDtoList = new ArrayList<>();
         RoleDto roleDto = new RoleDto();
-        roleDto.setId(1L);
         roleDto.setName("ROLE_USER");
         roleDtoList.add(roleDto);
 
@@ -82,20 +57,16 @@ class RegistrationControllerTest {
                 .email("test2@mail.ru")
                 .roles(roleDtoList)
                 .profileDto(ProfileDto.builder()
-
+                        .id(1L)
                         .avatar("xxx")
                         .firstName("Serega")
                         .lastName("Ivanov")
                         .age(20)
                         .language("en")
                         .build()).build();
-
-        userId = userRepository.save(user).getId();
     }
 
     @Test
-    @Order(1)
-    @Sql(scripts = "classpath:/sql/deleteUser.sql", executionPhase = AFTER_TEST_METHOD)
     void register() throws Exception {
 
         mockMvc.perform(post("/registration/new")
@@ -105,14 +76,13 @@ class RegistrationControllerTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
+        verify(userService).createUser(any());
     }
 
     @Test
-    @Order(2)
-    @Sql(scripts = "classpath:/sql/deleteAll.sql", executionPhase = AFTER_TEST_METHOD)
     void updateUser() throws Exception {
         userDto.setEmail("update@mail.ru");
-        userDto.setId(userId);
+        userDto.setId(userDto.getId());
         mockMvc.perform(put("/registration/update")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(userDto)))
@@ -120,5 +90,7 @@ class RegistrationControllerTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
+        verify(userService).updateUser(any());
+
     }
 }

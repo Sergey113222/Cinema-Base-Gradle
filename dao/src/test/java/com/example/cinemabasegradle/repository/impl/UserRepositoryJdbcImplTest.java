@@ -36,6 +36,7 @@ class UserRepositoryJdbcImplTest {
         Role role = new Role();
         role.setId(1L);
         role.setName("ROLE_USER");
+        roleList.add(role);
 
         user = User.builder()
                 .username("TestUsername2")

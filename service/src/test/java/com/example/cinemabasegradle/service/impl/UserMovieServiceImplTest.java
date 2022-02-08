@@ -10,10 +10,14 @@ import com.example.cinemabasegradle.service.SearchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -40,6 +44,7 @@ class UserMovieServiceImplTest {
     private UserRepository userRepository;
     private SearchService searchService;
     private UserMovieServiceImpl userMovieService;
+    private Authentication authentication;
 
     private final UserMovie userMovie;
     private final User user;
@@ -88,10 +93,16 @@ class UserMovieServiceImplTest {
         ProducerRabbitService producerRabbitService = mock(ProducerRabbitService.class);
         userMovieService = new UserMovieServiceImpl(userMovieRepository, userRepository,
                 searchService, producerRabbitService);
+
+        authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
     void addToFavouriteMovies() {
+        when(authentication.getPrincipal()).thenReturn(2);
         when(userRepository.findByIdAndActiveTrue(any())).thenReturn(Optional.of(user));
         when(userMovieRepository.save(any())).thenReturn(userMovie);
         userMovieService.addToFavouriteMovies(movieDto);

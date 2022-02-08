@@ -1,5 +1,5 @@
-insert into user (id, username, password, role, email, active, created)
-values (10, 'Test1Username', 'Test1Password', 'ROLE_USER', 'test1@mail.ru', 1, now());
+insert into user (id, username, password, email, active, created)
+values (10, 'Test1Username', 'Test1Password', 'test1@mail.ru', 1, now());
 
 insert into profile (id, user_id,  created)
 values (77, 10, now());
