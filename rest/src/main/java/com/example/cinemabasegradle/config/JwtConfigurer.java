@@ -1,5 +1,8 @@
-package com.example.cinemabasegradle.security;
+package com.example.cinemabasegradle.config;
 
+import com.example.cinemabasegradle.security.JwtAuthenticationEntryPoint;
+import com.example.cinemabasegradle.security.JwtTokenFilter;
+import com.example.cinemabasegradle.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

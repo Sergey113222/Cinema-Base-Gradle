@@ -4,7 +4,6 @@ import com.example.cinemabasegradle.config.EmbeddedTestConfig;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
-import com.example.cinemabasegradle.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UserRepositoryJdbcImplTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryJdbcImpl userRepository;
     private User user;
 
     @BeforeEach
@@ -102,5 +101,27 @@ class UserRepositoryJdbcImplTest {
         User deletedUser = userRepository.findByUsername(user.getUsername());
         assertNotNull(deletedUser.getId());
         assertFalse(deletedUser.getActive());
+    }
+
+    @Test
+    void deleteAllUser() {
+        userRepository.save(user);
+        user.setId(null);
+        user.setEmail("test3@mail.ru");
+        userRepository.save(user);
+
+        userRepository.deleteAllUser();
+        List<User> userListDeleted = userRepository.findAll();
+        assertEquals(0, userListDeleted.size());
+    }
+
+    @Test
+    void saveAllUser() {
+        user.setEmail("test5@mail.ru");
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
+        userRepository.saveAllUser(userList);
+        assertTrue(true);
+
     }
 }

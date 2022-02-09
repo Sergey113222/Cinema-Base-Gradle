@@ -73,7 +73,9 @@ subprojects {
             property 'sonar.exclusions', "**/dto/**," +
                     "**/model/**," +
                     "**/exception/**," +
-                    "**/config/**"
+                    "**/config/**, " +
+                    "**/CinemaBaseGradleApplication.java, " + "**/SecurityApplication.java, " +
+                    "**/SenderApplication.java, " + "**/WebApplication.java, "
         }
     }
 }
