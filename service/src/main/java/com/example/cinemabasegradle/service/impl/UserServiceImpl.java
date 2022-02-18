@@ -43,12 +43,10 @@ public class UserServiceImpl implements UserService {
 
         List<Role> roles = user.getRoles();
         List<Role> rolesFromDB = new ArrayList<>();
-        if (!roles.contains(ROLE_ADMIN)) {
-            for (Role role : roles) {
+        for (Role role : roles) {
+            if (!role.getName().equals(ROLE_ADMIN)) {
                 rolesFromDB.add(roleRepository.findByName(role.getName()));
-            }
-        } else {
-            throw new IllegalArgumentException(MESSAGE);
+            } else throw new IllegalArgumentException(MESSAGE);
         }
         user.setRoles(rolesFromDB);
         Profile profile = user.getProfile();
