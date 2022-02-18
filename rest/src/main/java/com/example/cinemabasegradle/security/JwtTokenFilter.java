@@ -34,7 +34,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
             logger.debug("Failed to process authentication request", authenticationException);
             this.authenticationEntryPoint.commence(request, response, authenticationException);
-            return;
         }
         filterChain.doFilter(request, response);
     }

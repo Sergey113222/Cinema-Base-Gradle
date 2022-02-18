@@ -1,7 +1,6 @@
 package com.example.cinemabasegradle.repository.impl;
 
 import com.example.cinemabasegradle.mapper.UsersRowMapper;
-import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -69,7 +68,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     @Value("${sql.user.saveAll}")
     private String saveAllUserQuery;
     @Value("${sql.user_role.save}")
-    private String saveUserRoleQuery;
+    private String saveRoleQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final UsersRowMapper usersRowMapper;
@@ -144,15 +143,13 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         } else {
             namedParameterJdbcTemplate.update(updateProfileQuery, paramSourceProfile);
         }
-        for (Role role : user.getRoles()) {
-            SqlParameterSource paramSourceUserRole = new MapSqlParameterSource()
+        MapSqlParameterSource[] params = new MapSqlParameterSource[user.getRoles().size()];
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            params[i] = new MapSqlParameterSource()
                     .addValue(USER_ID, user.getId())
-                    .addValue(ROLE_ID, role.getId());
-
-            namedParameterJdbcTemplate.update(saveUserRoleQuery, paramSourceUserRole);
+                    .addValue(ROLE_ID, user.getRoles().get(i).getId());
         }
-
-
+        namedParameterJdbcTemplate.batchUpdate(saveRoleQuery, params);
         return user;
     }
 

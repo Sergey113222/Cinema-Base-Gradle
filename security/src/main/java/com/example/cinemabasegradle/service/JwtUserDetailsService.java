@@ -14,17 +14,18 @@ import org.springframework.stereotype.Service;
 @SuppressFBWarnings(value = {"EI_EXPOSE_REP2"})
 public class JwtUserDetailsService {
 
-    private static final String MESSAGE = "User doesn't exist";
+    private static final String USER_DOES_NOT_EXIST = "User doesn't exist";
+    private static final String BAD_CREDENTIALS = "Bad credentials";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User loadUserByEmail(String email, String password) {
         User user = userRepository.findByEmailAndActiveTrue(email)
-                .orElseThrow(() -> new IllegalArgumentException(MESSAGE));
+                .orElseThrow(() -> new IllegalArgumentException(USER_DOES_NOT_EXIST));
         log.info("In loadByEmail() - user with email: {} successfully loaded", email);
 
         if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException(MESSAGE);
+            throw new IllegalArgumentException(BAD_CREDENTIALS);
         }
         return user;
     }
