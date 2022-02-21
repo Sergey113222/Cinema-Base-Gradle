@@ -30,11 +30,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+            filterChain.doFilter(request, response);
         } catch (AuthenticationException authenticationException) {
             SecurityContextHolder.clearContext();
             logger.debug("Failed to process authentication request", authenticationException);
             this.authenticationEntryPoint.commence(request, response, authenticationException);
         }
-        filterChain.doFilter(request, response);
     }
 }
