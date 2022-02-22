@@ -12,7 +12,11 @@
     <changeSet id="01" author="Sergey">
         <tagDatabase tag="db_init"/>
     </changeSet>
+    <changeSet id="02" author="Sergey">
+        <tagDatabase tag="add many to many relationship for role"/>
+    </changeSet>
 
     <include file="changelog_001.xml" relativeToChangelogFile="true"/>
+    <include file="changelog_002.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

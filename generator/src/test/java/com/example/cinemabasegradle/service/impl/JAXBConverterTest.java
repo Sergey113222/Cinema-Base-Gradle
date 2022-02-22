@@ -22,13 +22,17 @@ class JAXBConverterTest {
 
     @BeforeEach
     void setUp() {
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
 
         user = User.builder()
                 .id(1L)
                 .username("TestUsername3")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleList)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar("xxx")
@@ -55,7 +59,7 @@ class JAXBConverterTest {
     void unmarshal() {
         JAXBConverter jaxbConverter = new JAXBConverter();
         List<User> users = jaxbConverter.unmarshal(FILE_PATH_READ);
-        assertTrue(users.stream().count() > 0);
+        assertTrue(users.size() > 0);
     }
 
     @AfterAll

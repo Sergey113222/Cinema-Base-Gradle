@@ -2,19 +2,22 @@ package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.converter.UserMapper;
 import com.example.cinemabasegradle.dto.UserDto;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.cinemabasegradle.repository.RoleRepository;
 import com.example.cinemabasegradle.repository.UserRepository;
 import com.example.cinemabasegradle.service.UserService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,17 +27,33 @@ import java.util.stream.Collectors;
 @SuppressFBWarnings("EI_EXPOSE_REP2")
 public class UserServiceImpl implements UserService {
 
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String MESSAGE = "Can not save user with ROLE_ADMIN";
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     @Transactional
     public UserDto createUser(UserDto userDto) {
-        userDto.setRole(Role.ROLE_USER);
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         User user = userMapper.toModel(userDto);
         user.setActive(true);
+
+        List<Role> roles = user.getRoles();
+        List<Role> rolesFromDB = new ArrayList<>();
+        for (Role role : roles) {
+            if (!role.getName().contains(ROLE_ADMIN)) {
+                rolesFromDB.add(roleRepository.findByName(role.getName()));
+            } else {
+                throw new IllegalArgumentException(MESSAGE);
+            }
+        }
+        user.setRoles(rolesFromDB);
         Profile profile = user.getProfile();
         profile.setUser(user);
+
         User createdUser = userRepository.save(user);
         log.info("In createUser - user: {} successfully created", createdUser);
         return userDto;

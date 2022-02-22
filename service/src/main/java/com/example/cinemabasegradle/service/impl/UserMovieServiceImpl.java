@@ -14,6 +14,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +34,8 @@ public class UserMovieServiceImpl implements UserMovieService {
 
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
-        Long userId = 1L;
+        Authentication authenticate = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(authenticate.getPrincipal().toString());
         User user = userRepository
                 .findByIdAndActiveTrue(userId)
                 .orElseThrow(() ->

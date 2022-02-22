@@ -5,11 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.cinemabasegradle.model.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,6 +24,6 @@ public class UserDto {
     private String email;
     @Size(min = 6, max = 50, message = "Password must be between 6 and 50 characters")
     private String password;
-    private Role role;
+    private List<RoleDto> roles;
     private ProfileDto profileDto;
 }

@@ -2,6 +2,7 @@ package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.LocalDateConverter;
 import com.example.cinemabasegradle.model.Profile;
+import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.service.XmlService;
 import com.thoughtworks.xstream.XStream;
@@ -32,6 +33,7 @@ public class XStreamConverter implements XmlService {
         xstream.alias("user_list", UserList.class);
         xstream.alias("user", User.class);
         xstream.alias("profile", Profile.class);
+        xstream.alias("role", Role.class);
 
         try (Writer fileWriter = new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8)) {
             xstream.toXML(userList, fileWriter);
@@ -46,6 +48,7 @@ public class XStreamConverter implements XmlService {
         xstream.alias("user_list", UserList.class);
         xstream.alias("user", User.class);
         xstream.alias("profile", Profile.class);
+        xstream.alias("roles", Role.class);
 
 
         List<User> userList = null;

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -38,17 +39,20 @@ public class UserMovieController {
     private final UserMovieService userMovieService;
 
     @PostMapping
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<Long> addToFavouriteMovie(@RequestBody @Valid MovieDto movieDto) {
         Long createdMovieDtoId = userMovieService.addToFavouriteMovies(movieDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMovieDtoId);
     }
 
     @GetMapping("/{id}")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public MovieDto findFavouriteMovieById(@PathVariable("id") @Min(1) Long id) {
         return userMovieService.fetchFavouriteMovieById(id);
     }
 
     @PutMapping
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<Void> updateFavouriteMovie(@RequestBody @Valid MovieDto movieDto,
                                                      @RequestParam @Min(1) Long userMovieId) {
         userMovieService.updateFavouriteMovie(movieDto, userMovieId);
@@ -56,22 +60,26 @@ public class UserMovieController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<Void> deleteFavouriteMovie(@PathVariable("id") @Min(1) Long id) {
         userMovieService.deleteFavouriteMovie(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/all/{userId}")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public List<MovieDto> findAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
         return userMovieService.fetchAllByUserId(userId);
     }
 
     @GetMapping("/count/{userId}")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public Long countAllByUserId(@PathVariable("userId") @Min(1) Long userId) {
         return userMovieService.countFavouriteByUserId(userId);
     }
 
     @GetMapping("/sort")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public List<MovieDto> sortByColumnNameAsc(
             @RequestParam(value = "sortColumn", defaultValue = "created") String sortColumn,
             @RequestParam(value = "page", defaultValue = "20") Integer page,
@@ -81,6 +89,7 @@ public class UserMovieController {
     }
 
     @GetMapping("/filter")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public List<MovieDto> findAllFiltered(
             @RequestParam(value = "rating") @Min(0) @Max(10)
                     Integer rating,
@@ -98,6 +107,7 @@ public class UserMovieController {
     }
 
     @GetMapping("/filterNew")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public List<MovieDto> findAllFilteredNew(
             @RequestParam(value = "search")
             @Size(min = 1, max = 20, message = "Search should be between [1-20]") String search,

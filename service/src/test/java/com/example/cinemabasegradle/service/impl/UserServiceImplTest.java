@@ -2,16 +2,19 @@ package com.example.cinemabasegradle.service.impl;
 
 import com.example.cinemabasegradle.converter.UserMapper;
 import com.example.cinemabasegradle.dto.ProfileDto;
+import com.example.cinemabasegradle.dto.RoleDto;
 import com.example.cinemabasegradle.dto.UserDto;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
 import com.example.cinemabasegradle.model.Profile;
 import com.example.cinemabasegradle.model.Role;
 import com.example.cinemabasegradle.model.User;
 import com.example.cinemabasegradle.repository.UserRepository;
+import com.example.cinemabasegradle.repository.impl.RoleRepositoryJpa;
 import com.example.cinemabasegradle.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -33,21 +36,30 @@ class UserServiceImplTest {
     private UserMapper userMapper;
     private UserService userService;
     private UserRepository userRepository;
+    private RoleRepositoryJpa roleRepositoryJpa;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private User user;
     private UserDto userDto;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        roleRepositoryJpa = mock(RoleRepositoryJpa.class);
         userMapper = mock(UserMapper.class);
-        userService = new UserServiceImpl(userRepository, userMapper);
+        bCryptPasswordEncoder = mock(BCryptPasswordEncoder.class);
+        userService = new UserServiceImpl(userRepository, roleRepositoryJpa, userMapper, bCryptPasswordEncoder);
+
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
 
         user = User.builder()
                 .id(1L)
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleList)
                 .active(true)
                 .profile(Profile.builder()
                         .avatar("xxx")
@@ -60,12 +72,17 @@ class UserServiceImplTest {
         Profile profile = user.getProfile();
         profile.setUser(user);
 
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        RoleDto roleDto = new RoleDto();
+        roleDto.setName("ROLE_USER");
+        roleDtoList.add(roleDto);
+
         userDto = UserDto.builder()
                 .id(1L)
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleDtoList)
                 .profileDto(ProfileDto.builder()
                         .avatar("xxx")
                         .firstName("Serega")
@@ -77,6 +94,7 @@ class UserServiceImplTest {
 
     @Test
     void createUser() {
+
         when(userRepository.save(any())).thenReturn(user);
         when(userMapper.toModel(any())).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(userDto);
@@ -86,7 +104,7 @@ class UserServiceImplTest {
         assertEquals(userDto.getUsername(), savedUserDto.getUsername());
         assertEquals(userDto.getEmail(), savedUserDto.getEmail());
         assertEquals(userDto.getPassword(), savedUserDto.getPassword());
-        assertEquals(userDto.getRole(), savedUserDto.getRole());
+        assertEquals(userDto.getRoles(), savedUserDto.getRoles());
         assertEquals(userDto.getProfileDto(), savedUserDto.getProfileDto());
     }
 
@@ -101,7 +119,7 @@ class UserServiceImplTest {
         assertEquals(userDto.getUsername(), existUserDto.getUsername());
         assertEquals(userDto.getEmail(), existUserDto.getEmail());
         assertEquals(userDto.getPassword(), existUserDto.getPassword());
-        assertEquals(userDto.getRole(), existUserDto.getRole());
+        assertEquals(userDto.getRoles(), existUserDto.getRoles());
         assertEquals(userDto.getProfileDto(), existUserDto.getProfileDto());
     }
 
@@ -112,7 +130,7 @@ class UserServiceImplTest {
         when(userRepository.findAll()).thenReturn(userList);
         when(userMapper.toDto(any())).thenReturn(userDto);
         List<UserDto> existedUsers = userService.findAllUsers();
-        assertTrue(existedUsers.stream().count() > 0);
+        assertTrue(existedUsers.size() > 0);
     }
 
     @Test
@@ -126,7 +144,7 @@ class UserServiceImplTest {
         assertEquals(userDto.getUsername(), existUserDto.getUsername());
         assertEquals(userDto.getEmail(), existUserDto.getEmail());
         assertEquals(userDto.getPassword(), existUserDto.getPassword());
-        assertEquals(userDto.getRole(), existUserDto.getRole());
+        assertEquals(userDto.getRoles(), existUserDto.getRoles());
         assertEquals(userDto.getProfileDto(), existUserDto.getProfileDto());
     }
 

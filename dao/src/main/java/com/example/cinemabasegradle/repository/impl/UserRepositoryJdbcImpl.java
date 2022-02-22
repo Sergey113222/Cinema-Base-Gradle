@@ -40,6 +40,9 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private static final String AGE = "age";
     private static final String LANGUAGE = "language";
 
+    private static final String ROLE_ID = "roleId";
+
+
     @Value("${sql.user.find_by_id}")
     private String findByIdQuery;
     @Value("${sql.user.find_by_email}")
@@ -64,6 +67,8 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private String deleteAllProfileQuery;
     @Value("${sql.user.saveAll}")
     private String saveAllUserQuery;
+    @Value("${sql.user_role.save}")
+    private String saveRoleQuery;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final UsersRowMapper usersRowMapper;
@@ -108,7 +113,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                 .addValue(ID, user.getId())
                 .addValue(USERNAME, user.getUsername())
                 .addValue(PASSWORD, user.getPassword())
-                .addValue(ROLE, user.getRole().toString())
+                .addValue(ROLE, user.getRoles())
                 .addValue(ACTIVE, user.getActive())
                 .addValue(CREATED, LocalDate.now())
                 .addValue(UPDATED, LocalDate.now())
@@ -138,6 +143,13 @@ public class UserRepositoryJdbcImpl implements UserRepository {
         } else {
             namedParameterJdbcTemplate.update(updateProfileQuery, paramSourceProfile);
         }
+        MapSqlParameterSource[] params = new MapSqlParameterSource[user.getRoles().size()];
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            params[i] = new MapSqlParameterSource()
+                    .addValue(USER_ID, user.getId())
+                    .addValue(ROLE_ID, user.getRoles().get(i).getId());
+        }
+        namedParameterJdbcTemplate.batchUpdate(saveRoleQuery, params);
         return user;
     }
 
@@ -161,7 +173,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
                     .addValue(ID, userList.get(i).getId())
                     .addValue(USERNAME, userList.get(i).getUsername())
                     .addValue(PASSWORD, userList.get(i).getPassword())
-                    .addValue(ROLE, userList.get(i).getRole().toString())
+                    .addValue(ROLE, userList.get(i).getRoles())
                     .addValue(ACTIVE, userList.get(i).getActive())
                     .addValue(CREATED, LocalDate.now())
                     .addValue(UPDATED, LocalDate.now())

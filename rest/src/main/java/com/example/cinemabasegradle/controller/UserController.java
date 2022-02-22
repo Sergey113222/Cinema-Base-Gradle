@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.cinemabasegradle.service.UserService;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -20,16 +21,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public UserDto findUserById(@PathVariable("id") Long id) {
         return userService.findUserById(id);
     }
 
     @GetMapping
+    @RolesAllowed("ROLE_ADMIN")
     public List<UserDto> findAllUsers() {
         return userService.findAllUsers();
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public void deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }

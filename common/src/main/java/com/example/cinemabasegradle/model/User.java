@@ -11,8 +11,10 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -39,11 +41,14 @@ public class User extends BaseModel {
     private String password;
     @Column(name = "email")
     private String email;
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private Role role;
     @Column(name = "active")
     private Boolean active;
+
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private List<Role> roles;
 
     @OneToOne(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})

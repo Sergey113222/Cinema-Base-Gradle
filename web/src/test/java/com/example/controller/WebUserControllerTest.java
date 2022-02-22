@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.cinemabasegradle.dto.ProfileDto;
+import com.example.cinemabasegradle.dto.RoleDto;
 import com.example.cinemabasegradle.dto.UserDto;
-import com.example.cinemabasegradle.model.Role;
 import com.example.service.WebUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,12 +43,17 @@ class WebUserControllerTest {
                 .setMessageConverters(new MappingJackson2HttpMessageConverter())
                 .alwaysDo(MockMvcResultHandlers.print()).build();
 
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        RoleDto roleDto = new RoleDto();
+        roleDto.setName("ROLE_USER");
+        roleDtoList.add(roleDto);
+
         userDto = UserDto.builder()
                 .id(1L)
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleDtoList)
                 .profileDto(ProfileDto.builder()
                         .id(1L)
                         .avatar("xxx")

@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@ControllerAdvice
 @Slf4j
+@ControllerAdvice
 public class AopExceptionHandler {
 
     private static final Integer UNAUTHORIZED_CODE = 401;
@@ -70,4 +70,17 @@ public class AopExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDto> handleIllegalException(IllegalArgumentException ex) {
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setErrorMessage(ex.getMessage());
+        exceptionDto.setStatus(UNAUTHORIZED_CODE);
+        exceptionDto.setTimestamp(LocalDateTime.now());
+
+        log.error("Caught another exception exception: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionDto);
+    }
 }
+

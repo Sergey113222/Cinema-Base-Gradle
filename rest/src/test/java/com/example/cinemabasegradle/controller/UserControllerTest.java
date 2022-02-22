@@ -1,76 +1,61 @@
 package com.example.cinemabasegradle.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.cinemabasegradle.dto.ProfileDto;
+import com.example.cinemabasegradle.dto.RoleDto;
 import com.example.cinemabasegradle.dto.UserDto;
-import com.example.cinemabasegradle.model.Profile;
-import com.example.cinemabasegradle.model.Role;
-import com.example.cinemabasegradle.model.User;
+import com.example.cinemabasegradle.service.impl.UserServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import com.example.cinemabasegradle.repository.UserRepository;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("testJdbc")
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(SpringExtension.class)
 class UserControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
-    @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private UserRepository userRepository;
+
+    @Mock
+    private UserServiceImpl userService;
+    @InjectMocks
+    private UserController userController;
 
     private UserDto userDto;
-    private User user;
-    private Long userId;
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .username("TestUsername2")
-                .password("TestPassword2")
-                .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
-                .active(true)
-                .profile(Profile.builder()
-                        .avatar("xxx")
-                        .firstName("Serega")
-                        .lastName("Ivanov")
-                        .age(20)
-                        .language("en")
-                        .build())
-                .build();
-        Profile profile = user.getProfile();
-        profile.setUser(user);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+                .setMessageConverters(new MappingJackson2HttpMessageConverter())
+                .alwaysDo(MockMvcResultHandlers.print()).build();
+        objectMapper = new ObjectMapper();
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        RoleDto roleDto = new RoleDto();
+        roleDto.setName("ROLE_USER");
+        roleDtoList.add(roleDto);
 
         userDto = UserDto.builder()
                 .id(1L)
                 .username("TestUsername2")
                 .password("TestPassword2")
                 .email("test2@mail.ru")
-                .role(Role.ROLE_USER)
+                .roles(roleDtoList)
                 .profileDto(ProfileDto.builder()
                         .id(1L)
                         .avatar("xxx")
@@ -79,47 +64,39 @@ class UserControllerTest {
                         .age(20)
                         .language("en")
                         .build()).build();
-
-        userId = userRepository.save(user).getId();
     }
 
     @Test
-    @Order(1)
-    @Sql(scripts = "classpath:/sql/deleteUser.sql", executionPhase = AFTER_TEST_METHOD)
     void findUserById() throws Exception {
 
-        String responseAsString = mockMvc.perform(get("/api/v1/users/" + userId))
+        mockMvc.perform(get("/api/v1/users/" + userDto.getId())
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        UserDto expectedUserDto = objectMapper.readValue(responseAsString, UserDto.class);
-        assertEquals(expectedUserDto.getId(), userDto.getId());
-        assertEquals(expectedUserDto.getUsername(), userDto.getUsername());
-        assertEquals(expectedUserDto.getPassword(), userDto.getPassword());
-        assertEquals(expectedUserDto.getRole(), userDto.getRole());
-        assertEquals(expectedUserDto.getProfileDto(), userDto.getProfileDto());
+        verify(userService).findUserById(any());
     }
 
     @Test
-    @Order(2)
-    @Sql(scripts = "classpath:/sql/deleteUser.sql", executionPhase = AFTER_TEST_METHOD)
     void findAllUsers() throws Exception {
-        String responseAsString = mockMvc.perform(get("/api/v1/users/"))
+        mockMvc.perform(get("/api/v1/users/")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        List<UserDto> userDtoList = objectMapper.readValue(responseAsString, new TypeReference<>() {
-        });
-        assertTrue((userDtoList.size() > 0));
+        verify(userService).findAllUsers();
+
     }
 
     @Test
-    @Order(3)
-    @Sql(scripts = "classpath:/sql/deleteAll.sql", executionPhase = AFTER_TEST_METHOD)
     void deleteUserById() throws Exception {
-        mockMvc.perform(delete("/api/v1/users/" + userId))
+        mockMvc.perform(delete("/api/v1/users/" + userDto.getId())
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().is(200));
     }
 }

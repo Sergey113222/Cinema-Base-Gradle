@@ -6,7 +6,7 @@ bootJar {
 }
 
 ext{
-    h2Version = '1.4.200'
+    h2Version = '1.4.193'
     commonsIoVersion = '2.11.0'
 }
 

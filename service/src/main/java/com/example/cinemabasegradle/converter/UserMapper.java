@@ -16,8 +16,11 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     @Mapping(target = "profile", source = "profileDto")
+    @Mapping(target = "roles", source = "roles")
     User toModel(UserDto userDto);
 
     @Mapping(target = "profileDto", source = "profile")
+    @Mapping(target = "roles", source = "roles")
     UserDto toDto(User user);
+
 }
