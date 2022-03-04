@@ -1,6 +1,6 @@
 package com.example.cinemabasegradle.service.impl;
 
-import com.example.cinemabasegradle.dto.RabbitRequestDto;
+import com.example.cinemabasegradle.dto.BrokerRequestDto;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class ProducerRabbitService {
 
     private final RabbitTemplate template;
 
-    public void produce(RabbitRequestDto requestDto) {
+    public void produce(BrokerRequestDto requestDto) {
         log.info("sending message to broker" + requestDto);
         template.convertAndSend(exchange, routingKey, requestDto);
     }

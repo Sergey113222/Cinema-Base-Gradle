@@ -91,8 +91,9 @@ class UserMovieServiceImplTest {
         userMovieRepository = mock(UserMovieRepository.class);
         searchService = mock(SearchService.class);
         ProducerRabbitService producerRabbitService = mock(ProducerRabbitService.class);
+        ProducerKafkaService producerKafkaService = mock(ProducerKafkaService.class);
         userMovieService = new UserMovieServiceImpl(userMovieRepository, userRepository,
-                searchService, producerRabbitService);
+                searchService, producerRabbitService, producerKafkaService);
 
         authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);

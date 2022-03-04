@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.cinemabasegradle.dto.RabbitRequestDto;
+import com.example.cinemabasegradle.dto.BrokerRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,24 +9,24 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class ConsumerServiceTest {
+class ConsumerRabbitServiceTest {
 
     private EmailService emailService;
-    private ConsumerService consumerService;
-    private RabbitRequestDto rabbitRequestDto;
+    private ConsumerRabbitService consumerRabbitService;
+    private BrokerRequestDto brokerRequestDto;
 
     @BeforeEach
     void setUp() {
         emailService = mock(EmailService.class);
-        consumerService = new ConsumerService(emailService);
-        rabbitRequestDto = new RabbitRequestDto();
-        rabbitRequestDto.setTitle("testFilm");
-        rabbitRequestDto.setEmail("test@gmail.com");
+        consumerRabbitService = new ConsumerRabbitService(emailService);
+        brokerRequestDto = new BrokerRequestDto();
+        brokerRequestDto.setTitle("testFilm");
+        brokerRequestDto.setEmail("test@gmail.com");
     }
 
     @Test
     void listen() {
-        consumerService.listen(rabbitRequestDto);
+        consumerRabbitService.listen(brokerRequestDto);
         verify(emailService, Mockito.times(1)).sendEmail(any());
     }
 }
