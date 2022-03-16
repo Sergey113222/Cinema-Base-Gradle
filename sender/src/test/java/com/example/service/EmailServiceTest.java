@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.cinemabasegradle.dto.BrokerRequestDto;
+import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 class EmailServiceTest {
-    private BrokerRequestDto brokerRequestDto;
+    private RabbitRequestDto rabbitRequestDto;
     private JavaMailSender javaMailSender;
     private EmailService emailService;
 
@@ -21,14 +21,14 @@ class EmailServiceTest {
         javaMailSender = mock(JavaMailSender.class);
         emailService = new EmailService(javaMailSender);
 
-        brokerRequestDto = new BrokerRequestDto();
-        brokerRequestDto.setTitle("testFilm");
-        brokerRequestDto.setEmail("test@gmail.com");
+        rabbitRequestDto = new RabbitRequestDto();
+        rabbitRequestDto.setTitle("testFilm");
+        rabbitRequestDto.setEmail("test@gmail.com");
     }
 
     @Test
     void sendEmail() {
-        emailService.sendEmail(brokerRequestDto);
+        emailService.sendEmail(rabbitRequestDto);
         ArgumentCaptor<SimpleMailMessage> emailCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(javaMailSender, times(1)).send(emailCaptor.capture());
     }

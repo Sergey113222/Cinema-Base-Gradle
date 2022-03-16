@@ -1,7 +1,8 @@
 package com.example.cinemabasegradle.service.impl;
 
+import com.example.cinemabasegradle.dto.KafkaRequestDto;
 import com.example.cinemabasegradle.dto.MovieDto;
-import com.example.cinemabasegradle.dto.BrokerRequestDto;
+import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
 import com.example.cinemabasegradle.exception.ResourceNotFoundException;
 import com.example.cinemabasegradle.model.User;
@@ -50,11 +51,15 @@ public class UserMovieServiceImpl implements UserMovieService {
 
         UserMovie saveUserMovie = userMovieRepository.save(userMovie);
 
-        BrokerRequestDto requestDto = new BrokerRequestDto();
+        KafkaRequestDto requestDto = new KafkaRequestDto();
         requestDto.setEmail(user.getEmail());
         requestDto.setTitle(movieDto.getTitle());
 
-        producerRabbitService.produce(requestDto);
+        RabbitRequestDto rabbitRequestDto = new RabbitRequestDto();
+        rabbitRequestDto.setEmail(user.getEmail());
+        rabbitRequestDto.setTitle(movieDto.getTitle());
+
+        producerRabbitService.produce(rabbitRequestDto);
         producerKafkaService.produceObject(requestDto);
         return saveUserMovie.getId();
     }

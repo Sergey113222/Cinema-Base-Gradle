@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.cinemabasegradle.dto.BrokerRequestDto;
+import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +14,7 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    void sendEmail(BrokerRequestDto requestDto) {
+    void sendEmail(RabbitRequestDto requestDto) {
         String message = "Film " + requestDto.getTitle() + " successfully added to favourite ";
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(requestDto.getEmail());

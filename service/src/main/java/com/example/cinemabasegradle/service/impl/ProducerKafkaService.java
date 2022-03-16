@@ -1,6 +1,6 @@
 package com.example.cinemabasegradle.service.impl;
 
-import com.example.cinemabasegradle.dto.BrokerRequestDto;
+import com.example.cinemabasegradle.dto.KafkaRequestDto;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +17,10 @@ public class ProducerKafkaService {
     @Value("${spring.kafka.topic}")
     private String topic;
 
-    private final KafkaTemplate<String, BrokerRequestDto> kafkaTemplateObject;
+    private final KafkaTemplate<String, KafkaRequestDto> kafkaTemplateObject;
 
-    public void produceObject(BrokerRequestDto brokerRequestDto) {
-        log.info("sending message to broker" + brokerRequestDto);
-        kafkaTemplateObject.send(topic, brokerRequestDto);
+    public void produceObject(KafkaRequestDto kafkaRequestDto) {
+        log.info("sending message to broker" + kafkaRequestDto);
+        kafkaTemplateObject.send(topic, kafkaRequestDto);
     }
 }
