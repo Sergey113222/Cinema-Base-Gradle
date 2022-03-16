@@ -1,5 +1,6 @@
 package com.example.cinemabasegradle.service.impl;
 
+import com.example.cinemabasegradle.dto.KafkaRequestDto;
 import com.example.cinemabasegradle.dto.MovieDto;
 import com.example.cinemabasegradle.dto.RabbitRequestDto;
 import com.example.cinemabasegradle.exception.ErrorMessages;
@@ -31,6 +32,7 @@ public class UserMovieServiceImpl implements UserMovieService {
     private final UserRepository userRepository;
     private final SearchService searchService;
     private final ProducerRabbitService producerRabbitService;
+    private final ProducerKafkaService producerKafkaService;
 
     @Override
     public Long addToFavouriteMovies(MovieDto movieDto) {
@@ -49,11 +51,16 @@ public class UserMovieServiceImpl implements UserMovieService {
 
         UserMovie saveUserMovie = userMovieRepository.save(userMovie);
 
-        RabbitRequestDto requestDto = new RabbitRequestDto();
+        KafkaRequestDto requestDto = new KafkaRequestDto();
         requestDto.setEmail(user.getEmail());
         requestDto.setTitle(movieDto.getTitle());
 
-        producerRabbitService.produce(requestDto);
+        RabbitRequestDto rabbitRequestDto = new RabbitRequestDto();
+        rabbitRequestDto.setEmail(user.getEmail());
+        rabbitRequestDto.setTitle(movieDto.getTitle());
+
+        producerRabbitService.produce(rabbitRequestDto);
+        producerKafkaService.produceObject(requestDto);
         return saveUserMovie.getId();
     }
 
