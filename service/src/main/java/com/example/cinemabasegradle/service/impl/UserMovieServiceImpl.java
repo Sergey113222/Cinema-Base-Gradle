@@ -13,6 +13,7 @@ import com.example.cinemabasegradle.service.SearchService;
 import com.example.cinemabasegradle.service.UserMovieService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @SuppressFBWarnings("EI_EXPOSE_REP2")
 public class UserMovieServiceImpl implements UserMovieService {
@@ -58,7 +60,9 @@ public class UserMovieServiceImpl implements UserMovieService {
         RabbitRequestDto rabbitRequestDto = new RabbitRequestDto();
         rabbitRequestDto.setEmail(user.getEmail());
         rabbitRequestDto.setTitle(movieDto.getTitle());
-
+        log.info("In addToFavouriteMovies() - user with email: {} successfully add movie: {}",
+                user.getEmail(),
+                movieDto.getTitle());
         producerRabbitService.produce(rabbitRequestDto);
         producerKafkaService.produceObject(requestDto);
         return saveUserMovie.getId();
