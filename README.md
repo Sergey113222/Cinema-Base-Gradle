@@ -27,25 +27,25 @@
     - Bootstrup
 - ## Launch
     - First way. Set up in several application.properties files
-      fill username and password fields DB
-      fill username and password fields gmail
-      start every microservice manually
+        1. fill username and password fields DB
+        2. fill username and password fields gmail
+        3. start every microservice manually
     - Second way. Use Docker-compose
-      Build project
-      Execute command 'docker-compose up -d' in terminal
-      Script build backed images, database images, broker images, elk stack images and UI image. Then start
+        1. Build project
+        2. Execute command 'docker-compose up -d' in terminal
+        3. Script build backed images, database images, broker images, elk stack images and UI image. Then start
            containers with profile 'docker'
 
 - ## Content
-    1. Module common contain model, dto, exception classes
-    2. Module dao execute repository layer with different profiles
-       JPA - implementing repository with Hibernate
-       JDBC - implementing repository with NameJdbcTemplate
-    3. Module database launch Liquibase for create tables into DB and insert values required data
-    4. Module generator. There are several profiles (jaxb, xstream) for convert (marshal/unmarshal) from DB to XML file
-    5. Module service (service layer application)
-    6. Module rest (rest controller layer)
-    7. Module security. Microservice for login which check user credentials and return jwt token
-    8. Module sender. Microservice for notification. Receive the most relevant information from broker and send email to
+    - Module common contain model, dto, exception classes
+    - Module dao execute repository layer with different profiles
+        - JPA - implementing repository with Hibernate
+        - JDBC - implementing repository with NameJdbcTemplate
+    - Module database launch Liquibase for create tables into DB and insert values required data
+    - Module generator. There are several profiles (jaxb, xstream) for convert (marshal/unmarshal) from DB to XML file
+    - Module service (service layer application)
+    - Module rest (rest controller layer)
+    - Module security. Microservice for login which check user credentials and return jwt token
+    - Module sender. Microservice for notification. Receive the most relevant information from broker and send email to
        user
-    9. Module web. User Interface (frontend)
+    - Module web. User Interface (frontend)
