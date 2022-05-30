@@ -66,6 +66,7 @@ services:
     volumes:
       - ./rabbitmq/data/:/var/lib/movie-rabbitmq
       - ./rabbitmq/log/:/var/log/movie-rabbitmq
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -128,6 +129,7 @@ services:
       depends_on:
         - Elasticsearch
       ports:
+        - '5000:5000'
         - '9600:9600'
       environment:
         XPACK_MONITORING_ENABLED: false
@@ -147,7 +149,6 @@ services:
         - Elasticsearch
       networks:
         - "elk-net"
-
 
 volumes:
   movie-db: { }
