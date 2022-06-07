@@ -27,7 +27,7 @@
     - Bootstrup
 - ## Launch    
     - Use Docker-compose
-        1. Fill username and password fields gmail (sender microservice)
+        1. In application.properties file(sender microservice) fill username and password fields gmail 
         2. Build project
         3. Execute command 'docker-compose up -d' in terminal
         4. Script build backed images, database images, broker images, elk stack images and UI image. Then start
