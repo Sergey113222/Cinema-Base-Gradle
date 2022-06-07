@@ -25,15 +25,12 @@
     - Checkstyle, Jacoco, Spotbug, SonarQube
     - ELK stack
     - Bootstrup
-- ## Launch
-    - First way. Set up in several application.properties files
-        1. fill username and password fields DB
-        2. fill username and password fields gmail
-        3. start every microservice manually
-    - Second way. Use Docker-compose
-        1. Build project
-        2. Execute command 'docker-compose up -d' in terminal
-        3. Script build backed images, database images, broker images, elk stack images and UI image. Then start
+- ## Launch    
+    - Use Docker-compose
+        1. Fill username and password fields gmail (sender microservice)
+        2. Build project
+        3. Execute command 'docker-compose up -d' in terminal
+        4. Script build backed images, database images, broker images, elk stack images and UI image. Then start
            containers with profile 'docker'
 
 - ## Content
