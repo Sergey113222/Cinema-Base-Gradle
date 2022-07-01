@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         profile.setUser(user);
 
         User createdUser = userRepository.save(user);
-        log.info("In createUser - user: {} successfully created", createdUser);
+        log.info("In createUser - user with email: {} successfully created", createdUser.getEmail());
         return userDto;
     }
 
